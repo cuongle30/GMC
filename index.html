@@ -1,15 +1,82 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
-</head>
-<body>
-        <div class="container">
+<html lang="en-us">
+    <head>
+        <meta charset="=UTF-8">
+        <meta type="description" content="This is a dynamic web page that takes in users input and pulls movie ratings as well as displays the movies trailer.">
+        <title>GMC: Good Movies and Chill</title>
+        <!--link to bootstrap-->
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        <!--firebase ref-->
+        <script src="https://www.gstatic.com/firebasejs/5.9.3/firebase.js"></script>
+        <!-- ability to use jquery-->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    </head>
+    <body>
+        <container>
+            <!--logo-->
+            <div class="text-center mt-5 p-3" id="logo">
+                <img class="img-fluid" src="http://via.placeholder.com/20x20" alt="GMC logo">
+                Great Movies and Chill
+            </div>
+            <!--background image and search-->
+            <div class="text-center" id="enticing-image">
+                <img class="img-fluid" src="http://via.placeholder.com/800x600" alt="Image of people enjoying a good movie">
+                <!--form-->
+                <div class="col-6 rounded" id="movie-search">
+                    <form class="p-2">
+                        <div class="form-group">
+                            <label for="title-input">
+                                Movie Title
+                            </label>
+                            <input class="form-control" id="title-input" type="text" placeholder="search movie title">
+                        </div>
+                        <div class="form-group">
+                            <label for="genre-input">
+                                Movie Genre
+                            </label>
+                            <input class="form-control" id="genre-input" type="text" placeholder="search movies by genre">
+                        </div>
+                        <div class="form-group">
+                            <label for="title-input">
+                                Actors
+                            </label>
+                            <input class="form-control" id="actors-input" type="text" placeholder="search movies by actors">
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <!--these may need to be styled in the JS instead-->
+            <div class="text-center" id="results">
+                <div class="row p-2 mt-5 border-top justify-content-md-center">
+                    <div class="row">
+                        <div class="col-7 border">
+                            <img class="img-fluid" src="http://via.placeholder.com/400x300" alt="youtube videos">
+                        </div>
+                        <div class="col-5 border">
+                            <div id="title">Title:</div>
+                            <div id="genre">Genre:</div>
+                            <div id="movie-length">Movie length:</div>
+                            <div id="movie-rating">Rating:</div>
+                            <div id="movie-stars">Staring:</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </container>
 
+    </body>
 
-                <script src="javascript/app.js"></script>
-</body>
-</html>
+    <!--add these to the style sheet later-->
+    <style>
+    #enticing-image {
+        position:relative;
+    }
+    #movie-search {
+        position: absolute;
+        bottom: 50px;
+        left: 0;
+        right: 0;
+        margin: auto;
+        background: rgba(108, 117, 125, 0.5);
+    }
+    </style>
