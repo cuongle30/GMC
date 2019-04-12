@@ -1,5 +1,6 @@
 
-
+var youtubeVideos = [];
+var ombdInfo = [];
 var suggestedMovies = ["Avengers", "Get Smart"]
 
 function runSuggested() {
@@ -9,52 +10,63 @@ function runSuggested() {
     btn.innerHTML = suggestedMovies[i];
     btn.setAttribute("id", suggestedMovies[i]);
     document.getElementById("suggested").appendChild(btn);
-  }}
-  runSuggested();
+  }
+}
+runSuggested();
 
-  document.getElementById("container").addEventListener("click", function (event) {
-    if (event.target.tagName == "BUTTON") {
-      // Variable to grab data from inside button
-      var search = event.target.innerText
-      // Constructing a queryURL using the animal name
-      var queryURL = `https://www.googleapis.com/youtube/v3/videos?${search}&key=AIzaSyCSWFckVRIzwf7VdUWd4EFtufS3Ma3Mp0&part=snippet,contentDetails,statistics,status`;
+document.getElementById("container").addEventListener("click", function (event) {
+  if (event.target.tagName == "BUTTON") {
+    // Variable to grab data from inside button
+    var search = event.target.innerText
+    var youtubeQueryURL = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${search}&type=video&videoCaption=closedCaption&key=AIzaSyDmKkf_-rWtH9yJ4insi91j9DWhxwj1e-o`
+    var omdbQueryURL = `https://www.omdbapi.com/?apikey=d34a771e&t=${search}`
+    var movie = event.target.innerText
 
-      var movie = event.target.innerText
-      var queryURL = "https://www.omdbapi.com/?t=" + movie + "&apikey=trilogy";
-
-      console.log(queryURL)
-      // Performing a request with the queryURL
-      fetch(queryURL, {
-        method: "GET"
+    // Performing a request with the queryURL for youtube
+    fetch(youtubeQueryURL, {
+      method: "GET"
+    })
+      // Return JsonAfter data comes back from the request
+      .then(function (response) {
+        return response.json()
       })
-        // After data comes back from the request
-        .then(function (response) { return response.json() })
-        .then(function (response) {
-          console.log(queryURL);
-          console.log(response);
-
-          var results = response.data;
+      .then(function (response) {
+        //grab youtube videos from query
+        youtubeVideos = response.items
+        // Performing a request with the queryURL for OMDB
+        fetch(omdbQueryURL, {
+          method: "GET"
+        })
+          .then(function (response) {
+            return response.json()
+          })
+          .then(function (response) {
+            //Grab OMDB data from query
+            ombdInfo = response
+            console.log(youtubeVideos);
+            console.log(ombdInfo)
+          })
 
         var resultRender = document.querySelector("#results");
-          resultRender.innerHTML = "";
+        resultRender.innerHTML = "";
 
-          for (let item of results) {
+        for (let item of ombdInfo) {
 
-            // Creating and storing a div tag
-            var suggestedDiv = document.createElement("div");
+          // Creating and storing a div tag
+          var suggestedDiv = document.createElement("div");
 
-            // Creating a paragraph tag with the result item's rating
-            var p = document.createElement("p")
-            p.innerText = `Rating: ${item.rating}`;
+          // Creating a paragraph tag with the result item's rating
+          var p = document.createElement("p")
+          p.innerText = `Rating: ${item.rating}`;
 
-            // Creating and storing an image tag
-            var resultImage = document.createElement("img");
-            suggestedDiv.appendChild(p);
-            suggestedDiv.appendChild(resultImage);
+          // Creating and storing an image tag
+          var resultImage = document.createElement("img");
+          suggestedDiv.appendChild(p);
+          suggestedDiv.appendChild(resultImage);
+          resultRender.prepend(suggestedDiv)
+        };
 
-            // Prependng the countryDiv to the HTML page in the "#gifs-appear-here" div
-            resultRender.prepend(suggestedDiv)
-    };
-  });
-};
-  });
+
+      });
+  };
+});
