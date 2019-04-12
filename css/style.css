@@ -1,0 +1,11 @@
+#enticing-image {
+    position: relative;
+}
+
+#movie-search {
+    position: absolute;
+    bottom: 50px;
+    left: 0;
+    right: 0;
+    margin: auto;
+    background: rgba(108, 117, 125, 0.5);
