@@ -33,9 +33,8 @@ function runSuggested() {
           console.log(queryURL);
           console.log(response);
 
-          var result = response.data;
+          var results = response.data;
 
-        })
         var resultRender = document.querySelector("#results");
           resultRender.innerHTML = "";
 
@@ -55,5 +54,7 @@ function runSuggested() {
 
             // Prependng the countryDiv to the HTML page in the "#gifs-appear-here" div
             resultRender.prepend(suggestedDiv)
-    }}
-  })
+    };
+  });
+};
+  });
