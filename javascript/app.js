@@ -18,7 +18,7 @@ function runSuggested() {
       var search = event.target.innerText
       // Constructing a queryURL using the animal name
       var queryURL = `https://www.googleapis.com/youtube/v3/videos?${search}&key=AIzaSyCSWFckVRIzwf7VdUWd4EFtufS3Ma3Mp0&part=snippet,contentDetails,statistics,status`;
-
+      
       var movie = event.target.innerText
       var queryURL = "https://www.omdbapi.com/?t=" + movie + "&apikey=trilogy";
 
