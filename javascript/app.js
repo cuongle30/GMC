@@ -31,13 +31,13 @@ document.getElementById("container").addEventListener("click", function (event) 
         return response.json()
       })
       .then(function (response) {
-        //grab youtube videos from query
+        //Settimeout to allow for response to pull
         document.addEventListener(
           'DOMContentLoaded', () => setTimeout(initializeFreshchatWidget, 100)
         )
         console.log("youtube api responsed")
         console.log(response)
-        
+        //grab youtube videos from query
         var youtubeVideos = response.items[0].id.videoId
         ytplayer.loadVideoById({videoId: youtubeVideos})
         // Performing a request with the queryURL for OMDB
@@ -82,6 +82,8 @@ document.getElementById("container").addEventListener("click", function (event) 
       });
   };
 });
+
+//create iframe for youtube
 function video() {
   console.log("video function call")
 var tag = document.createElement('script');
@@ -90,7 +92,7 @@ tag.src = 'http://www.youtube.com/iframe_api';
 var firstScriptTag = document.getElementsByTagName('script')[0];
 firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 }
-//Create the YouTube Player.
+//run youtube function.
 var ytplayer;
 function onYouTubeIframeAPIReady() {
   console.log("onYouTubeIframeAPIReady")
