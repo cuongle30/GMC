@@ -41,7 +41,7 @@ document.getElementById("container").addEventListener("click", function (event) 
             return response.json()
           })
           .then(function (response) {
-            //Grab OMDB data from query
+            //Grab OMDB data from query -- need to less specfic and not rating 
            var omdbInfo = response.Ratings;
 
             console.log(youtubeVideos);
