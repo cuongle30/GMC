@@ -73,6 +73,14 @@ document.getElementById("container").addEventListener("click", function (event) 
           resultRender.prepend(suggestedDiv)
         };
 
+        for (let response of omdbInfo) {
+          var resultVideo = document.createElement("video");
+
+          resultVideo.innerHTML = response.id
+
+          
+
+        }
 
       });
     });
