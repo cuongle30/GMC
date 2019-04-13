@@ -4,8 +4,21 @@
 
 #movie-search {
     position: absolute;
-    bottom: 50px;
+    bottom: 85px;
     left: 0;
-    right: 0;
+    right:0;
+    padding: 10px 20px;
+    font-size: 20px;
+    color: rgb(219, 16, 16);
     margin: auto;
-    background: rgba(108, 117, 125, 0.5);
+    background: rgba(134, 134, 129, 0.5);
+}
+
+ button{
+   position: relative;
+color: rgb(221, 211, 212);
+background:red;
+
+
+
+}
