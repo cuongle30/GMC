@@ -17,7 +17,7 @@ runSuggested();
 document.getElementById("container").addEventListener("click", function (event) {
   if (event.target.tagName == "BUTTON") {
     // Variable to grab data from inside button
-    var search = event.target.innerText
+    var search = event.target.innerText + "official trailer"
     var youtubeQueryURL = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${search}&type=video&videoCaption=closedCaption&key=AIzaSyDmKkf_-rWtH9yJ4insi91j9DWhxwj1e-o`
     var omdbQueryURL = `https://www.omdbapi.com/?apikey=d34a771e&t=${search}`
 
@@ -60,9 +60,7 @@ document.getElementById("container").addEventListener("click", function (event) 
             //Clear search
             resultRender.innerHTML = "";
             //OMDB for loop
-
-            var movieTitle = document.createElement("h3");
-            movieTitle.innerHTML = `Title: ${omdbInfo.Source}`;
+            
             for (let response of omdbInfo) {
               console.log(response)
               // Creating and storing a div tag
@@ -84,7 +82,6 @@ document.getElementById("container").addEventListener("click", function (event) 
       });
   };
 });
-
 function video() {
   console.log("video function call")
 var tag = document.createElement('script');
@@ -93,14 +90,12 @@ tag.src = 'http://www.youtube.com/iframe_api';
 var firstScriptTag = document.getElementsByTagName('script')[0];
 firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 }
-
 //Create the YouTube Player.
 var ytplayer;
 function onYouTubeIframeAPIReady() {
   console.log("onYouTubeIframeAPIReady")
   ytplayer = new YT.Player('spherical-video-player', {
-    height: '300',
-    width: '440',
+   
   });
 }
 video();
