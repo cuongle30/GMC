@@ -40,7 +40,7 @@ createSuggestedButtons();
 document.getElementById("suggested").addEventListener("click", function (event) {
   event.preventDefault();
   var recommended = event.target.innerText + "official trailer"
-  var youtubeQueryURL = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${recommended}&type=video&videoCaption=closedCaption&key=AIzaSyDmKkf_-rWtH9yJ4insi91j9DWhxwj1e-o`
+  var youtubeQueryURL = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${recommended}&key=AIzaSyDmKkf_-rWtH9yJ4insi91j9DWhxwj1e-o`
   // create a function for performing a request with the queryURL for youtube
   function youtubeFetch() {
     fetch(youtubeQueryURL, {
@@ -80,7 +80,7 @@ document.getElementById("movie-search-btn").addEventListener("click", function (
     $('#title-validation').slideUp(3000);
   } else {
     var search = titleSearch + "official trailer"
-    var youtubeQueryURL = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${search}&type=video&videoCaption=closedCaption&key=AIzaSyDmKkf_-rWtH9yJ4insi91j9DWhxwj1e-o`
+    var youtubeQueryURL = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${search}&key=AIzaSyDmKkf_-rWtH9yJ4insi91j9DWhxwj1e-o`
 
     // Performing a request with the queryURL for youtube
     fetch(youtubeQueryURL, {
