@@ -1,8 +1,10 @@
-
 var youtubeVideos = [];
-var ombdInfo = [];
 var suggestedMovies = ["Avengers", "Get Smart"]
 var titleSearch = "";
+
+// --- form validation ---
+
+$("#title-validation").hide();
 
 // function for created prepopulated buttons
 function createSuggestedButtons() {
@@ -22,6 +24,7 @@ function createSuggestedButtons() {
 // run the function to created the suggested movie buttons
 createSuggestedButtons();
 
+// --- YouTube button ---
 //Click event and query Youtube for recommended button title
 document.getElementById("suggested").addEventListener("click", function (event) {
   event.preventDefault();
@@ -49,15 +52,22 @@ document.getElementById("suggested").addEventListener("click", function (event) 
       });
   }
   // call the youtubeFetch function
+
   youtubeFetch();
 });
 
+//  --- YoutTube search ---
 //Click event and query YouTube for Search button
 document.getElementById("movie-search-btn").addEventListener("click", function (event) {
   event.preventDefault();
-  if (event.target.tagName == "BUTTON") {
-    // Variable to grab data from inside button
-    var titleSearch = document.getElementById("title-input").value.trim();
+
+  // Variable to grab data from user search
+  var titleSearch = document.getElementById("title-input").value.trim();
+  // form validation
+  if (titleSearch == "") {
+    $('#title-validation').slideDown("slow");
+    $('#title-validation').slideUp(3000);
+  } else {
     var search = titleSearch + "official trailer"
     var youtubeQueryURL = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${search}&type=video&videoCaption=closedCaption&key=AIzaSyDmKkf_-rWtH9yJ4insi91j9DWhxwj1e-o`
 
@@ -80,7 +90,7 @@ document.getElementById("movie-search-btn").addEventListener("click", function (
         var youtubeVideos = response.items[0].id.videoId
         ytplayer.loadVideoById({ videoId: youtubeVideos })
       });
-  };
+  }
 });
 
 //create iframe for youtube
@@ -92,6 +102,7 @@ function video() {
   var firstScriptTag = document.getElementsByTagName('script')[0];
   firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 }
+
 //run youtube function.
 var ytplayer;
 function onYouTubeIframeAPIReady() {
@@ -249,9 +260,12 @@ function renderMovieElements(response) {
 // this is the same as the Youtube -- consider combining
 document.getElementById("movie-search-btn").addEventListener("click", function (event) {
   event.preventDefault();
-  if (event.target.tagName == "BUTTON") {
-    // Variable to grab data from inside button
-    var titleSearch = document.getElementById("title-input").value.trim();
+
+  // Variable to grab data from inside button
+  var titleSearch = document.getElementById("title-input").value.trim();
+
+  // data validation
+  if (titleSearch !== "") {
     var queryURL = `https://www.omdbapi.com/?t="${titleSearch}&apikey=d34a771e`;
 
     // Creating an AJAX call for the search
@@ -286,14 +300,11 @@ document.getElementById("movie-search-btn").addEventListener("click", function (
       };
       xhr.send();
     }
+
+
+    // display the results when someone does a search
+    $("#results").show();
   }
-
-  // --- UI/UX ---
-  // clear the text field after someone searches
-  document.getElementById("title-input").value = "";
-
-  // display the results when someone does a search
-  $("#results").show();
 });
 
 
@@ -302,13 +313,85 @@ document.getElementById("movie-search-btn").addEventListener("click", function (
 // hide the suggested buttons until someone clicks
 $("#suggested").hide();
 
-$("#suggested-toggle").click(function() {
+$("#suggested-toggle").click(function () {
   console.log("suggested movie has been clicked");
   $("#suggested").slideToggle();
 });
 
 // hide the results area until someone clicks a button or searches for a movie
 $("#results").hide();
+
+// --- firebase ---
+// Initialize Firebase
+var config = {
+  apiKey: "AIzaSyBWpkmTPb8Jz22vRZY3PEH4HlmPBlN_-LY",
+  authDomain: "great-movies-and-chill.firebaseapp.com",
+  databaseURL: "https://great-movies-and-chill.firebaseio.com",
+  projectId: "great-movies-and-chill",
+  storageBucket: "great-movies-and-chill.appspot.com",
+  messagingSenderId: "511630558004"
+};
+
+firebase.initializeApp(config);
+
+var database = firebase.database();
+
+// when someone does a search -- may be redundant -- consider looping together with omdb and youtube search
+document.getElementById("movie-search-btn").addEventListener("click", function (event) {
+  event.preventDefault();
+
+  // Variable to grab data from inside button
+  var titleSearch = document.getElementById("title-input").value.trim();
+
+  // data validation
+  if (titleSearch !== "") {
+
+    // create local "temporary" object for holding movie searches
+    var newMovie = {
+      titleSearch: titleSearch
+    };
+
+    // upload new movie data to the database
+    database.ref().push(newMovie);
+
+    // log to console
+    console.log(newMovie.titleSearch);
+
+    // --- UI/UX ---
+    // clear the text field after someone searches
+    document.getElementById("title-input").value = "";
+
+    // create Firebase event for adding movie to the database
+    database.ref().on("child_added", function (childSnapshot) {
+      console.log(childSnapshot.val());
+
+      // store everything into a variable
+      var titleSearch = childSnapshot.val().titleSearch;
+
+      // displayMovieInfo
+      console.log(titleSearch);
+
+      // create temp object of our values
+      let tempMovieData = {
+        titleSearch: titleSearch
+      };
+
+      console.log(tempMovieData);
+
+      // loop through the childSnapshot object
+      for (let prop of Object.values(tempMovieData)) {
+        let newBtn = document.createElement("BUTTON")
+        newBtn.innerHTML = prop;
+        newBtn.onclick = displayMovieInfo;
+        newBtn.classList.add("movie-btn");
+        newBtn.setAttribute("id", prop);
+        document.getElementById("suggested").appendChild(newBtn);
+      }
+    })
+  }
+})
+
+
 
 
 
