@@ -18,16 +18,17 @@
 </head>
 
 <body>
-    
-        <!--logo-->
-        <div class="container" id="container">
+
+    <!--logo-->
+    <div class="container" id="container">
         <div class="text-center mt-5 p-3" id="logo">
             <img class="img-fluid" src="http://via.placeholder.com/20x20" alt="GMC logo">
             Great Movies and Chill
         </div>
         <!--background image and search-->
         <div class="text-center" id="enticing-image">
-            <img class="img-fluid" src="assets/images/family-watching-movie.jpg" alt="Image of people enjoying a good movie">
+            <img class="img-fluid" src="assets/images/family-watching-movie.jpg"
+                alt="Image of people enjoying a good movie">
             <!--form-->
             <div class="col-5 rounded" id="movie-search">
                 <form class="p-2">
@@ -37,7 +38,7 @@
                         </label>
                         <input class="form-control" id="title-input" type="text" placeholder="search movie title">
                     </div>
-                    <div class="form-group">
+                    <!-- <div class="form-group">
                         <label for="genre-input">
                             Movie Genre
                         </label>
@@ -48,38 +49,29 @@
                             Actors
                         </label>
                         <input class="form-control" id="actors-input" type="text" placeholder="search movies by actors">
-                    </div>
+                    </div> -->
                     <button class="btn btn-primary mb-3" id="movie-search-btn">Search</button>
                 </form>
             </div>
         </div>
         <div id="suggested"></div>
-        <div class="show-trailer" id="show-trailer"></div> 
-        </div>
-        <!--these may need to be styled in the JS instead-->
-        <div class="text-center" id="results">
-            <div class ="text-center" id="result"></div>
-            <div class="row p-2 mt-5 border-top justify-content-md-center">
-                <div class="row">
-                        <div class="show-trailer" id="show-trailer"></div> 
-                    <div class="col-5 border">
-                        <img class="img-fluid" id="spherical-video-player" src="http://via.placeholder.com/400x300" alt="youtube videos">
-                    </div>
-                    <div class="col-5 border">
-                        <div id="title">Title:</div>
-                        <div id="genre">Genre:</div>
-                        <div id="movie-length">Movie length:</div>
-                        <div id="movie-rating">Rating:</div>
-                        <div id="movie-stars">Staring:</div>
-                    </div>
+    </div>
+    <!--these may need to be styled in the JS instead-->
+    <div class="text-center" id="results">
+        <div class="text-center" id="result"></div>
+        <div class="row p-2 mt-5 border-top justify-content-md-center">
+            <div class="row">
+                <div class="col-8 border">
+                    <img class="img-fluid" id="spherical-video-player" src="http://via.placeholder.com/400x300"
+                        alt="YouTube video">
+                </div>
+                <div class="col-4 border" id="omdb-movie-results">
                 </div>
             </div>
         </div>
-        
-              
-              
-              
-              <script type="text/javascript"></script>
+    </div>
+
+
 
 </body>
 
