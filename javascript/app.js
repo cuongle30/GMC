@@ -13,14 +13,41 @@ function runSuggested() {
   }
 }
 runSuggested();
+//Click event and query for Recommended button
+document.getElementById("suggested").addEventListener("click", function (event) {
+  event.preventDefault();
+  var recommended = event.target.innerText + "official trailer"
+  var youtubeQueryURL = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${recommended}&type=video&videoCaption=closedCaption&key=AIzaSyDmKkf_-rWtH9yJ4insi91j9DWhxwj1e-o`
+  // Performing a request with the queryURL for youtube
+  fetch(youtubeQueryURL, {
+    method: "GET"
+  })
+    // Return JsonAfter data comes back from the request
+    .then(function (response) {
+      return response.json()
+    })
+    .then(function (response) {
+      //Settimeout to allow for response to pull
+      document.addEventListener(
+        'DOMContentLoaded', () => setTimeout(initializeFreshchatWidget, 100)
+      )
+      console.log("youtube api responsed")
+      console.log(response)
+      //grab youtube videos from query
+      var youtubeVideos = response.items[0].id.videoId
+      ytplayer.loadVideoById({ videoId: youtubeVideos })
+    });
+});
 
-document.getElementById("container").addEventListener("click", function (event) {
+//Click event and query for Search button
+document.getElementById("movie-search-btn").addEventListener("click", function (event) {
+  event.preventDefault();
   if (event.target.tagName == "BUTTON") {
     // Variable to grab data from inside button
-    var search = event.target.innerText
+    var titleSearch = document.getElementById("title-input").value.trim();
+    var search = titleSearch + "official trailer"
     var youtubeQueryURL = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${search}&type=video&videoCaption=closedCaption&key=AIzaSyDmKkf_-rWtH9yJ4insi91j9DWhxwj1e-o`
     var omdbQueryURL = `https://www.omdbapi.com/?apikey=d34a771e&t=${search}`
-    
 
     // Performing a request with the queryURL for youtube
     fetch(youtubeQueryURL, {
@@ -31,50 +58,36 @@ document.getElementById("container").addEventListener("click", function (event) 
         return response.json()
       })
       .then(function (response) {
+        //Settimeout to allow for response to pull
+        document.addEventListener(
+          'DOMContentLoaded', () => setTimeout(initializeFreshchatWidget, 100)
+        )
+        console.log("youtube api responsed")
+        console.log(response)
         //grab youtube videos from query
-        var youtubeVideos = response.items
+        var youtubeVideos = response.items[0].id.videoId
+        ytplayer.loadVideoById({ videoId: youtubeVideos })
         // Performing a request with the queryURL for OMDB
-        fetch(omdbQueryURL, {
-          method: "GET"
-        })
-          .then(function (response) {
-            return response.json()
-          })
-          .then(function (response) {
-            //Grab OMDB data from query
-           var omdbInfo = response.Ratings;
-
-            console.log(youtubeVideos);
-            console.log(omdbQueryURL)
-            console.log(ombdInfo)
-          
-
-        var resultRender = document.querySelector("#result");
-        //Clear search
-        resultRender.innerHTML = "";
-        //OMDB for loop
-
-        var movieTitle = document.createElement("h3");
-          movieTitle.innerHTML = `Title: ${omdbInfo.Source}`;
-        for (let response of omdbInfo) {
-          console.log(response)
-          // Creating and storing a div tag
-          var suggestedDiv = document.createElement("div");
-          
-          // Creating a paragraph tag with the result item's rating
-          var p = document.createElement("p")
-          p.innerHTML = `Rating: ${response.Source} ${response.Value}`;
-
-          // Creating and storing an image tag
-          var resultImage = document.createElement("img");
-          
-          suggestedDiv.appendChild(p);
-          suggestedDiv.appendChild(resultImage);
-          resultRender.prepend(suggestedDiv)
-        };
-
-
       });
-    });
   };
 });
+
+//create iframe for youtube
+function video() {
+  console.log("video function call")
+  var tag = document.createElement('script');
+  tag.id = 'iframe-demo';
+  tag.src = 'https://www.youtube.com/iframe_api';
+  var firstScriptTag = document.getElementsByTagName('script')[0];
+  firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+}
+//run youtube function.
+var ytplayer;
+function onYouTubeIframeAPIReady() {
+  console.log("onYouTubeIframeAPIReady")
+  ytplayer = new YT.Player('spherical-video-player', {
+
+  });
+}
+video();
+
