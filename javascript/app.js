@@ -1,3 +1,14 @@
+
+
+
+
+
+
+
+
+
+
+
 var youtubeVideos = [];
 var suggestedMovies = ["Avengers", "Get Smart"]
 var titleSearch = "";
@@ -169,7 +180,8 @@ function displayMovieInfo() {
 function renderMovieElements(response) {
   // Creating a div to hold the movie
   var movieDiv = document.createElement("div");
-  movieDiv.classList.add("movie");
+  // bootstrap styling
+  movieDiv.setAttribute("class", "movie p-2 mr-2");
 
   // storing the title data
   var title = response.Title;
@@ -253,7 +265,7 @@ function renderMovieElements(response) {
 
   // Putting the entire movie above the previous movies
   let movieParent = document.querySelector("#omdb-movie-results");
-  movieParent.insertBefore(movieDiv, movieParent.firstChild);
+  movieParent.replaceChild(movieDiv, movieParent.firstChild);
 }
 
 // --- OMDB Search --
@@ -360,41 +372,32 @@ document.getElementById("movie-search-btn").addEventListener("click", function (
     // --- UI/UX ---
     // clear the text field after someone searches
     document.getElementById("title-input").value = "";
-
-    // create Firebase event for adding movie to the database
-    database.ref().on("child_added", function (childSnapshot) {
-      console.log(childSnapshot.val());
-
-      // store everything into a variable
-      var titleSearch = childSnapshot.val().titleSearch;
-
-      // displayMovieInfo
-      console.log(titleSearch);
-
-      // create temp object of our values
-      let tempMovieData = {
-        titleSearch: titleSearch
-      };
-
-      console.log(tempMovieData);
-
-      // loop through the childSnapshot object
-      for (let prop of Object.values(tempMovieData)) {
-        let newBtn = document.createElement("BUTTON")
-        newBtn.innerHTML = prop;
-        newBtn.onclick = displayMovieInfo;
-        newBtn.classList.add("movie-btn");
-        newBtn.setAttribute("id", prop);
-        document.getElementById("suggested").appendChild(newBtn);
-      }
-    })
   }
 })
+// create Firebase event for adding movie to the database
+database.ref().on("child_added", function (childSnapshot) {
+  console.log(childSnapshot.val());
 
+  // store everything into a variable
+  var titleSearch = childSnapshot.val().titleSearch;
 
+  // displayMovieInfo
+  console.log(titleSearch);
 
+  // create temp object of our values
+  let tempMovieData = {
+    titleSearch: titleSearch
+  };
 
+  console.log(tempMovieData);
 
-
-
-
+  // loop through the childSnapshot object
+  for (let prop of Object.values(tempMovieData)) {
+    let newBtn = document.createElement("BUTTON")
+    newBtn.innerHTML = prop;
+    newBtn.onclick = displayMovieInfo;
+    newBtn.classList.add("movie-btn");
+    newBtn.setAttribute("id", prop);
+    document.getElementById("suggested").appendChild(newBtn);
+  }
+})
