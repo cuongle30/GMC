@@ -2,6 +2,10 @@
     position: relative;
 }
 
+.youtube-video {
+    max-width: 100%;
+}
+
 #movie-search {
     position: absolute;
     bottom: 85px;

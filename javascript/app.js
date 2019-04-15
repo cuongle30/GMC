@@ -41,7 +41,7 @@ document.getElementById("suggested").addEventListener("click", function (event) 
         document.addEventListener(
           'DOMContentLoaded', () => setTimeout(initializeFreshchatWidget, 100)
         )
-        console.log("youtube api responsed")
+        console.log("youtube api responded")
         console.log(response)
         //grab youtube videos from query
         var youtubeVideos = response.items[0].id.videoId
@@ -150,6 +150,8 @@ function displayMovieInfo() {
       xhr.send();
     }
   }
+  // display the results when someone clicks the suggested movies button
+  $("#results").show();
 }
 
 // Function for building our ajax response
@@ -285,7 +287,29 @@ document.getElementById("movie-search-btn").addEventListener("click", function (
       xhr.send();
     }
   }
+
+  // --- UI/UX ---
+  // clear the text field after someone searches
+  document.getElementById("title-input").value = "";
+
+  // display the results when someone does a search
+  $("#results").show();
 });
+
+
+// --- UX/UI ---
+
+// hide the suggested buttons until someone clicks
+$("#suggested").hide();
+
+$("#suggested-toggle").click(function() {
+  console.log("suggested movie has been clicked");
+  $("#suggested").slideToggle();
+});
+
+// hide the results area until someone clicks a button or searches for a movie
+$("#results").hide();
+
 
 
 
