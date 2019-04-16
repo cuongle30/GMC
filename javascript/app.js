@@ -1,14 +1,3 @@
-
-
-
-
-
-
-
-
-
-
-
 var youtubeVideos = [];
 var suggestedMovies = ["Avengers", "Get Smart"]
 var titleSearch = "";
@@ -173,7 +162,9 @@ function displayMovieInfo() {
     }
   }
   // display the results when someone clicks the suggested movies button
+  shiftFocalPoint()
   $("#results").show();
+  
 }
 
 // Function for building our ajax response
@@ -313,12 +304,13 @@ document.getElementById("movie-search-btn").addEventListener("click", function (
       xhr.send();
     }
 
-
     // display the results when someone does a search
     $("#results").show();
+
+    shiftFocalPoint () 
+
   }
 });
-
 
 // --- UX/UI ---
 // --- to remove duplicate buttons ---
@@ -329,6 +321,7 @@ var uniqueMovies = []
 
 // hide the suggested buttons until someone clicks
 $("#suggested").hide();
+
 // when someone clicks the suggested button
 $("#suggested-toggle").click(function () {
   console.log("suggested movie has been clicked");
@@ -345,6 +338,15 @@ $("#suggested-toggle").click(function () {
   addUniqueButtons();
   $("#suggested").slideToggle();
 });
+
+// function for shift focal point
+function shiftFocalPoint () {
+  document.getElementById("enticing-image").style.height = "0px";
+  $(".photo-credit").hide();
+  document.getElementById("movie-search").removeAttribute("class");
+  document.getElementById("movie-search").setAttribute("class", "col-12 rounded" );
+  document.getElementById("movie-search").style.position = "static";
+}
 
 //create a function to help remove duplcations pulled from: https://www.tutorialrepublic.com/faq/how-to-remove-duplicate-values-from-a-javascript-array.php
 function getUnique(array){
@@ -372,10 +374,11 @@ function addUniqueButtons (){
 
 // function to clear existing buttons
 function clearExistingButtons() {
-  var existingButtons = document.getElementById("suggested");
-  while (existingButtons.hasChildNodes()) {
-    existingButtons.removeChild(existingButtons.firstChild);
-  }
+  $("#suggested").empty();
+  // var existingButtons = document.getElementById("suggested");
+  // while (existingButtons.hasChildNodes()) {
+  //   existingButtons.removeChild(existingButtons.firstChild);
+  // }
 }
 
 

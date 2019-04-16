@@ -1,3 +1,7 @@
+body {
+    font-family: Calibri,Candara,Segoe,Segoe UI,Optima,Arial,sans-serif; 
+}
+
 #enticing-image {
     position: relative;
 }
@@ -18,11 +22,18 @@
     background: rgba(134, 134, 129, 0.5);
 }
 
- button{
-   position: relative;
-color: rgb(221, 211, 212);
-background:red;
+.photo-credit {
+    position: absolute;
+    bottom: 0.5px;
+    right: 20px;
+}
 
+ button {
+    position: relative;
+    color: rgb(221, 211, 212);
+    background:red;
+}
 
-
+#enticing-image-holder {
+    position: relative;
 }
