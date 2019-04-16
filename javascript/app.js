@@ -1,14 +1,3 @@
-
-
-
-
-
-
-
-
-
-
-
 var youtubeVideos = [];
 var suggestedMovies = ["Avengers", "Get Smart"]
 var titleSearch = "";
@@ -173,7 +162,9 @@ function displayMovieInfo() {
     }
   }
   // display the results when someone clicks the suggested movies button
+  shiftFocalPoint()
   $("#results").show();
+  
 }
 
 // Function for building our ajax response
@@ -313,22 +304,83 @@ document.getElementById("movie-search-btn").addEventListener("click", function (
       xhr.send();
     }
 
-
     // display the results when someone does a search
     $("#results").show();
+
+    shiftFocalPoint () 
+
   }
 });
 
-
 // --- UX/UI ---
+// --- to remove duplicate buttons ---
+// globally accessible empty firebase array to add to 
+var firebaseMovies = []
+// an array to store only the unique values
+var uniqueMovies = []
 
 // hide the suggested buttons until someone clicks
 $("#suggested").hide();
 
+// when someone clicks the suggested button
 $("#suggested-toggle").click(function () {
   console.log("suggested movie has been clicked");
+  // add everything in the suggested div to an array
+  $(".movie-btn").each(function(){
+    console.log("this id is: " + this.id);
+    firebaseMovies.splice(0,0, this.id);
+  })
+  console.log("the firebaseMovies array: " + firebaseMovies);
+  // capture only the unique values
+  uniqueMovies = getUnique(firebaseMovies);
+  console.log("the new unique movies array: " + uniqueMovies);
+  clearExistingButtons();
+  addUniqueButtons();
   $("#suggested").slideToggle();
 });
+
+// function for shift focal point
+function shiftFocalPoint () {
+  document.getElementById("enticing-image").style.height = "0px";
+  $(".photo-credit").hide();
+  document.getElementById("movie-search").removeAttribute("class");
+  document.getElementById("movie-search").setAttribute("class", "col-12 rounded" );
+  document.getElementById("movie-search").style.position = "static";
+}
+
+//create a function to help remove duplcations pulled from: https://www.tutorialrepublic.com/faq/how-to-remove-duplicate-values-from-a-javascript-array.php
+function getUnique(array){
+  var uniqueArray = [];
+  for (i=0; i < array.length; i++) {
+    if(uniqueArray.indexOf(array[i]) === -1) {
+      uniqueArray.push(array[i]);
+    }
+  }
+  return uniqueArray;
+}
+
+// function to loop through unqie array and make buttons
+function addUniqueButtons (){
+  var i;
+  for (i=0; i < uniqueMovies.length; i++) {
+      let newBtn = document.createElement("BUTTON")
+      newBtn.innerHTML = uniqueMovies[i];
+      newBtn.onclick = displayMovieInfo;
+      newBtn.classList.add("movie-btn");
+      newBtn.setAttribute("id", uniqueMovies[i]);
+      document.getElementById("suggested").appendChild(newBtn);
+  }
+}
+
+// function to clear existing buttons
+function clearExistingButtons() {
+  $("#suggested").empty();
+  // var existingButtons = document.getElementById("suggested");
+  // while (existingButtons.hasChildNodes()) {
+  //   existingButtons.removeChild(existingButtons.firstChild);
+  // }
+}
+
 
 // hide the results area until someone clicks a button or searches for a movie
 $("#results").hide();
@@ -374,6 +426,8 @@ document.getElementById("movie-search-btn").addEventListener("click", function (
     document.getElementById("title-input").value = "";
   }
 })
+
+
 // create Firebase event for adding movie to the database
 database.ref().on("child_added", function (childSnapshot) {
   console.log(childSnapshot.val());
@@ -381,7 +435,7 @@ database.ref().on("child_added", function (childSnapshot) {
   // store everything into a variable
   var titleSearch = childSnapshot.val().titleSearch;
 
-  // displayMovieInfo
+  // displayMovieInfo -- this part is important! how can i get this to compare with what already exists in the html (that it just created)? the firebase would be loaded but the html wouldn't 
   console.log(titleSearch);
 
   // create temp object of our values
@@ -390,8 +444,7 @@ database.ref().on("child_added", function (childSnapshot) {
   };
 
   console.log(tempMovieData);
-
-  // loop through the childSnapshot object
+  // loop through the childSnapshot object and add buttons
   for (let prop of Object.values(tempMovieData)) {
     let newBtn = document.createElement("BUTTON")
     newBtn.innerHTML = prop;
@@ -400,4 +453,11 @@ database.ref().on("child_added", function (childSnapshot) {
     newBtn.setAttribute("id", prop);
     document.getElementById("suggested").appendChild(newBtn);
   }
-})
+
+}) 
+    
+    
+
+    
+    
+
