@@ -108,7 +108,8 @@ var ytplayer;
 function onYouTubeIframeAPIReady() {
   console.log("onYouTubeIframeAPIReady")
   ytplayer = new YT.Player('spherical-video-player', {
-
+    height: '56%',
+    width: '85%',
   });
 }
 video();
