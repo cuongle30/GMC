@@ -8,6 +8,8 @@ body {
 
 .youtube-video {
     max-width: 100%;
+    margin-top: 50px;
+    
 }
 
 #movie-search {
