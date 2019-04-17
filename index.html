@@ -14,11 +14,13 @@
     <!-- ability to use jquery-->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <link rel="stylesheet" type="text/css" href="./css/style.css">
+    <!--Font awesome library-->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
 
 </head>
 
 <body>
-
+    
     <!--logo-->
     <div class="container" id="container">
         <div class="text-center mt-5 p-3" id="logo">
@@ -35,11 +37,14 @@
             </div>
             <!--form-->
             <div class="col-5 rounded" id="movie-search">
+                
                 <form class="p-2">
+                    
                     <div class="form-group">
                         <label for="title-input">
                             Movie Title
                         </label>
+                        <i class="fas fa-film"></i>
                         <input class="form-control" id="title-input" type="text" placeholder="title">
                     </div>
                     <!-- <div class="form-group">
@@ -62,7 +67,7 @@
             </div>
         </div>
         <div id="suggested-toggle" class="bg-secondary rounded">
-            <p class="text-light p-1 "><i id="see"></i>&nbsp Click here to see what other&rsquo;s have searched for.&nbsp<i id="see"></i> </p>
+            <p class="text-light p-1 "><i id="see"></i>&nbsp SEE POPULAR SEARCHES.&nbsp<i id="see"></i> </p>
         </div>
         <div id="suggested"></div>
     </div>
@@ -79,6 +84,7 @@
             </div>
         </div>
     </div>
+
 
 </body>
 
