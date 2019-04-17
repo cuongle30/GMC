@@ -30,10 +30,9 @@ body {
     right: 20px;
 }
 
- button {
-    position: relative;
-    color: rgb(221, 211, 212);
-    background:red;
+.movie-btn {
+    color: white;
+    background:rgb(1, 46, 105)
 }
 
 #enticing-image-holder {
@@ -44,12 +43,12 @@ body {
         -webkit-transform: rotate(45deg);
 }
 i {
-    border: solid rgb(255, 255, 255);
+    border: solid white;
     border-width: 0 3px 3px 0;
     display: inline-block;
     padding: 3px;
 }
-p {
+#suggested-toggle p {
     cursor: pointer;
 }
 
