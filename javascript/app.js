@@ -366,7 +366,9 @@ function addUniqueButtons (){
       let newBtn = document.createElement("BUTTON")
       newBtn.innerHTML = uniqueMovies[i];
       newBtn.onclick = displayMovieInfo;
-      newBtn.classList.add("movie-btn");
+
+      newBtn.setAttribute("class", "movie-btn btn btn-outline-secondary");
+
       newBtn.setAttribute("id", uniqueMovies[i]);
       document.getElementById("suggested").appendChild(newBtn);
   }
