@@ -3,7 +3,15 @@ body {
 }
 
 #enticing-image {
-    position: relative;
+    display:inline-block;
+}
+h2{
+    display:inline-block;
+    color: rgb(31, 93, 187);
+    font-size: 45px;
+    font-weight: bold;
+    vertical-align: bottom;
+    text-shadow: 2.5px 2.5px rgb(110, 104, 104);
 }
 
 .youtube-video {
