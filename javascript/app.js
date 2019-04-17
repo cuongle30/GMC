@@ -342,8 +342,9 @@ $("#suggested-toggle").click(function () {
 
 // function for shift focal point
 function shiftFocalPoint () {
-  document.getElementById("enticing-image").style.height = "0px";
+  document.getElementById("enticing-image").style.height = "70px";
   $(".photo-credit").hide();
+  $("#enticing-image").hide();
   document.getElementById("movie-search").removeAttribute("class");
   document.getElementById("movie-search").setAttribute("class", "col-12 rounded" );
   document.getElementById("movie-search").style.position = "static";
