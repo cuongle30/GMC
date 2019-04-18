@@ -2,6 +2,8 @@ var youtubeVideos = [];
 var suggestedMovies = ["Avengers", "Get Smart"]
 var titleSearch = "";
 
+var year = "";
+
 // --- form validation ---
 
 $("#title-validation").hide();
@@ -29,7 +31,7 @@ createSuggestedButtons();
 document.getElementById("suggested").addEventListener("click", function (event) {
   event.preventDefault();
   var recommended = event.target.innerText + "official trailer"
-  var youtubeQueryURL = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${recommended}&key=AIzaSyDmKkf_-rWtH9yJ4insi91j9DWhxwj1e-o`
+  var youtubeQueryURL = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${recommended}+${year}&key=AIzaSyDmKkf_-rWtH9yJ4insi91j9DWhxwj1e-o`
   // create a function for performing a request with the queryURL for youtube
   function youtubeFetch() {
     fetch(youtubeQueryURL, {
@@ -69,9 +71,11 @@ document.getElementById("movie-search-btn").addEventListener("click", function (
     $('#title-validation').slideUp(3000);
   } else {
     var search = titleSearch + "official trailer"
-    var youtubeQueryURL = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${search}&key=AIzaSyDmKkf_-rWtH9yJ4insi91j9DWhxwj1e-o`
-
+    
     // Performing a request with the queryURL for youtube
+    setTimeout( function(){
+      var youtubeQueryURL = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${search}+${year}&key=AIzaSyDmKkf_-rWtH9yJ4insi91j9DWhxwj1e-o`
+    
     fetch(youtubeQueryURL, {
       method: "GET"
     })
@@ -82,7 +86,7 @@ document.getElementById("movie-search-btn").addEventListener("click", function (
       .then(function (response) {
         //Settimeout to allow for response to pull
         document.addEventListener(
-          'DOMContentLoaded', () => setTimeout(initializeFreshchatWidget, 100)
+          'DOMContentLoaded', () => setTimeout(initializeFreshchatWidget, 250)
         )
         console.log("youtube api responded")
         console.log(response)
@@ -90,6 +94,7 @@ document.getElementById("movie-search-btn").addEventListener("click", function (
         var youtubeVideos = response.items[0].id.videoId
         ytplayer.loadVideoById({ videoId: youtubeVideos })
       });
+    }, 300);
   }
 });
 
@@ -140,6 +145,7 @@ function displayMovieInfo() {
           if (response.Error) {
             console.error(response.Error);
           } else {
+            year= response.Year;
             renderMovieElements(response);
           }
         });
@@ -283,6 +289,7 @@ document.getElementById("movie-search-btn").addEventListener("click", function (
           if (response.Error) {
             console.error(response.Error);
           } else {
+            year = response.Year
             renderMovieElements(response);
           }
         });
@@ -430,8 +437,6 @@ document.getElementById("movie-search-btn").addEventListener("click", function (
     document.getElementById("title-input").value = "";
   }
 })
-
-
 // create Firebase event for adding movie to the database
 database.ref().on("child_added", function (childSnapshot) {
   console.log(childSnapshot.val());
@@ -446,7 +451,6 @@ database.ref().on("child_added", function (childSnapshot) {
   let tempMovieData = {
     titleSearch: titleSearch
   };
-
   console.log(tempMovieData);
   // loop through the childSnapshot object and add buttons
   for (let prop of Object.values(tempMovieData)) {
@@ -457,11 +461,4 @@ database.ref().on("child_added", function (childSnapshot) {
     newBtn.setAttribute("id", prop);
     document.getElementById("suggested").appendChild(newBtn);
   }
-
 }) 
-    
-    
-
-    
-    
-
