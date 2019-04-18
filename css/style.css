@@ -14,6 +14,12 @@ h5{
     vertical-align: bottom;
     text-shadow: 2.5px 2.5px rgb(153, 152, 152);
 }
+p {
+    color: white;
+}
+h2 {
+    color: white;
+}
 
 .youtube-video {
     max-width: 100%;
@@ -61,9 +67,11 @@ i {
     display: inline-block;
     padding: 3px;
 }
-#suggested-toggle p {
+#suggested-toggle {
     cursor: pointer;
     position: relative;
+    width: 200px;
+    height: 40px;
 }
 
 [class*="BT"]{width:200px;display:block;position:absolute;padding:0;border-color:#0e0e0e;margin:0 0 10px;line-height:6px;border-style:solid;left:55%;top:150px;margin-left:-125px;height:40px;}
