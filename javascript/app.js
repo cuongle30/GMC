@@ -227,7 +227,7 @@ function getUnique(array) {
 // function to loop through unqie array and make buttons
 function addUniqueButtons() {
   var i;
-  for (i = 0; i < 10; i++) {
+  for (i = 0; i < 20; i++) {
     let newBtn = document.createElement("BUTTON")
     newBtn.innerHTML = uniqueMovies[i];
     newBtn.onclick = displayMovieInfo;
