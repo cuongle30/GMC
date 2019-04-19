@@ -73,7 +73,7 @@ function renderMovieElements(response) {
 
   // creating an element to hold the title
   var h2Title = document.createElement("h2");
-  h2Title.innerText = `${title}`;
+  h2Title.innerHTML = `<b>${title}</b>`;
 
   // displaying the title
   movieDiv.appendChild(h2Title);
@@ -93,7 +93,7 @@ function renderMovieElements(response) {
 
   // creating an element to hold the genre
   var pGenre = document.createElement("p");
-  pGenre.innerText = `Genre: ${genre}`;
+  pGenre.innerHTML = `<b>Genre: </b>${genre}`;
 
   // displaying the genre
   movieDiv.appendChild(pGenre);
@@ -103,7 +103,7 @@ function renderMovieElements(response) {
 
   // creating an element to hold the genre
   var pMovieLength = document.createElement("p");
-  pMovieLength.innerText = `Movie length: ${movieLength}`;
+  pMovieLength.innerHTML = `<b>Movie length: </b>${movieLength}`;
 
   // displaying the genre
   movieDiv.appendChild(pMovieLength);
@@ -113,7 +113,7 @@ function renderMovieElements(response) {
 
   // Creating an element to have the rating displayed
   var pRating = document.createElement("p");
-  pRating.innerText = `Rating: ${rating}`;
+  pRating.innerHTML = `<b>Rating: </b>${rating}`;
 
   // Displaying the rating
   movieDiv.appendChild(pRating);
@@ -123,7 +123,7 @@ function renderMovieElements(response) {
 
   // Creating an element to hold the release year
   var pReleased = document.createElement("p");
-  pReleased.innerText = `Released: ${released}`;
+  pReleased.innerHTML = `<b>Released: </b>${released}`;
 
   // Displaying the release year
   movieDiv.appendChild(pReleased);
@@ -133,7 +133,7 @@ function renderMovieElements(response) {
 
   // Creating an element to hold the plot
   var pPlot = document.createElement("p");
-  pPlot.innerText = `Plot: ${plot}`;
+  pPlot.innerHTML = `<b>Plot: </b>${plot}`;
 
   // Appending the plot
   movieDiv.appendChild(pPlot);
@@ -143,7 +143,7 @@ function renderMovieElements(response) {
 
   // Creating an element to hold the actors
   var pActors = document.createElement("p");
-  pActors.innerText = `Actors: ${actors}`;
+  pActors.innerHTML = `<b>Actors: </b>${actors}`;
 
   // Appending the actors
   movieDiv.appendChild(pActors);
@@ -163,7 +163,7 @@ var uniqueMovies = []
 // hide the suggested buttons until someone clicks
 $("#suggested").hide();
 
-// when someone clicks the suggested button
+// when someone clicks the trending button
 $("#suggested-toggle").click(function () {
   console.log("suggested movie has been clicked");
   // add everything in the suggested div to an array
@@ -172,6 +172,8 @@ $("#suggested-toggle").click(function () {
     firebaseMovies.splice(0, 0, this.id);
   })
   console.log("the firebaseMovies array: " + firebaseMovies);
+
+
   // capture only the unique values
   uniqueMovies = getUnique(firebaseMovies);
   console.log("the new unique movies array: " + uniqueMovies);
@@ -270,7 +272,7 @@ database.ref().on("child_added", function (childSnapshot) {
   console.log(childSnapshot.val());
 
   // store everything into a variable
-  var titleSearch = childSnapshot.val().titleSearch;
+  var titleSearch = childSnapshot.val().titleSearch.toUpperCase();
 
   // displayMovieInfo -- this part is important! how can i get this to compare with what already exists in the html (that it just created)? the firebase would be loaded but the html wouldn't 
   console.log(titleSearch);
