@@ -42,7 +42,7 @@ h2{
 
 .movie-btn {
     color: white;
-    background:rgb(1, 46, 105)
+    background:rgb(160, 194, 238)
 }
 
 #enticing-image-holder {
@@ -67,7 +67,7 @@ i {
 [class*="OH"]{overflow:hidden;}
 [class*="BR"]{border-width:2px;}
 [class*="R6"]{border-radius:6px;}
-[class*="NF"]{background:rgb(1, 46, 105);}
+[class*="NF"]{background:rgb(184, 206, 235);}
 [class*="BT"]:hover hover{  margin-left:123px;}
 [class*="TU"]{text-transform:uppercase;}
 [class*="PT"]{cursor:pointer;}
