@@ -72,6 +72,7 @@ i {
     position: relative;
     width: 200px;
     height: 40px;
+    margin-left: 55px;
 }
 
 [class*="BT"]{width:200px;display:block;position:absolute;padding:0;border-color:#0e0e0e;margin:0 0 10px;line-height:6px;border-style:solid;left:55%;top:150px;margin-left:-125px;height:40px;}
