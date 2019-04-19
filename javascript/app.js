@@ -1,15 +1,17 @@
 var youtubeVideos = [];
 var titleSearch = "";
 var year = "";
+
 // --- form validation ---
 $("#title-validation").hide();
-// --- Return Suggested ---
-//Click event and query Youtube for recommended button title
-document.getElementById("suggested").addEventListener("click", function (event) {
+// --- Return Trending ---
+//Click event and query Youtube for trending button title
+document.getElementById("trending").addEventListener("click", function (event) {
   event.preventDefault();
   var recommended = event.target.innerText
   getData(recommended);
 });
+
 //  --- Return Searches ---
 //Click event and query YouTube for Search button
 document.getElementById("movie-search-btn").addEventListener("click", function (event) {
@@ -48,7 +50,7 @@ function onYouTubeIframeAPIReady() {
 }
 video();
 
-// OMDB search for suggested movies
+// OMDB search for trending movies
 // displayMovieInfo function that is called when the button is clicked
 function displayMovieInfo() {
   // Only run code if the current element has the "movie-btn" class
@@ -57,7 +59,7 @@ function displayMovieInfo() {
     var movie = event.target.getAttribute("id");
     getData(movie);
   }
-  // display the results when someone clicks the suggested movies button
+  // display the results when someone clicks the trending movies button
   shiftFocalPoint()
   $("#results").show();
 }
@@ -160,26 +162,34 @@ var firebaseMovies = []
 // an array to store only the unique values
 var uniqueMovies = []
 
-// hide the suggested buttons until someone clicks
-$("#suggested").hide();
+// hide the trending buttons until someone clicks
+$("#trending").hide();
 
 // when someone clicks the trending button
-$("#suggested-toggle").click(function () {
-  console.log("suggested movie has been clicked");
-  // add everything in the suggested div to an array
+$("#trending-toggle").click(function () {
+  console.log("trending movie has been clicked");
+  // add everything in the trending div to an array
   $(".movie-btn").each(function () {
     console.log("this id is: " + this.id);
     firebaseMovies.splice(0, 0, this.id);
   })
   console.log("the firebaseMovies array: " + firebaseMovies);
 
-
   // capture only the unique values
   uniqueMovies = getUnique(firebaseMovies);
   console.log("the new unique movies array: " + uniqueMovies);
   clearExistingButtons();
   addUniqueButtons();
-  $("#suggested").slideToggle();
+
+  // slide the trending buttons down and change the text of the trending toggle
+  var trendingToggleText = $(this);
+  $("#trending").slideToggle('slow', function() {
+    if ($(this).is(':visible')) {
+      trendingToggleText.html(`Hide trending<span class="up-indicator"></span>`);
+    } else {
+      trendingToggleText.html(`See trending<span class="down-indicator"></span>`);
+    }
+  });  
 });
 
 // function for shift focal point
@@ -190,6 +200,17 @@ function shiftFocalPoint() {
   document.getElementById("movie-search").removeAttribute("class");
   document.getElementById("movie-search").setAttribute("class", "col-12 rounded");
   document.getElementById("movie-search").style.position = "static";
+  document.getElementById("trending-toggle").style.marginLeft = "0px";
+  // change the toggle to show
+  var trendingToggleElement = $("#trending-toggle");
+  trendingToggleElement.html(`See trending<span class="down-indicator"></span>`);
+
+  document.getElementById("trending").style.marginLeft = "0px";
+  // hide the trending buttons until someone clicks
+  $("#trending").hide();
+
+  // !!!!!!!!!!!!!!!!try to do a media query for the search button https://www.w3schools.com/jsref/met_win_matchmedia.asp
+
 }
 
 //create a function to help remove duplcations pulled from: https://www.tutorialrepublic.com/faq/how-to-remove-duplicate-values-from-a-javascript-array.php
@@ -206,7 +227,7 @@ function getUnique(array) {
 // function to loop through unqie array and make buttons
 function addUniqueButtons() {
   var i;
-  for (i = 0; i < 10; i++) {
+  for (i = 0; i < 20; i++) {
     let newBtn = document.createElement("BUTTON")
     newBtn.innerHTML = uniqueMovies[i];
     newBtn.onclick = displayMovieInfo;
@@ -214,13 +235,13 @@ function addUniqueButtons() {
     newBtn.setAttribute("class", "movie-btn btn btn-outline-secondary");
 
     newBtn.setAttribute("id", uniqueMovies[i]);
-    document.getElementById("suggested").appendChild(newBtn);
+    document.getElementById("trending").appendChild(newBtn);
   }
 }
 
 // function to clear existing buttons
 function clearExistingButtons() {
-  $("#suggested").empty();
+  $("#trending").empty();
 }
 // hide the results area until someone clicks a button or searches for a movie
 $("#results").hide();
@@ -290,7 +311,7 @@ database.ref().on("child_added", function (childSnapshot) {
     newBtn.onclick = displayMovieInfo;
     newBtn.classList.add("movie-btn");
     newBtn.setAttribute("id", prop);
-    document.getElementById("suggested").appendChild(newBtn);
+    document.getElementById("trending").appendChild(newBtn);
   }
 })
 

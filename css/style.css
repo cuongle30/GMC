@@ -26,7 +26,7 @@ h2 {
     margin-top: 50px;
     margin-left: 15%;
     position: relative;
-    
+    margin-left: 0px;
 }
 
 #movie-search {
@@ -55,37 +55,55 @@ h2 {
 .movie-btn {
     color: white;
     background:rgb(1, 46, 105);
+    margin-right: 10px;
+    margin-bottom: 10px;
     
-}
-
-#trending {
-    text-transform: uppercase;
+    
 }
 
 #enticing-image-holder {
     position: relative;
 }
-#see {
-        transform: rotate(45deg);
-        -webkit-transform: rotate(45deg);
-}
 
-i {
+.up-indicator {
+    transform: rotate(45deg);
+    -webkit-transform: rotate(225deg);
     border: solid white;
     border-width: 0 3px 3px 0;
     display: inline-block;
     padding: 3px;
+    margin-top: 3px;
+    margin-left:6px;
 }
-#suggested-toggle {
+
+.down-indicator {
+    transform: rotate(45deg);
+    -webkit-transform: rotate(45deg);
+    border: solid white;
+    border-width: 0 3px 3px 0;
+    display: inline-block;
+    padding: 3px;
+    margin-bottom: 3px;
+    margin-left:6px;
+}
+
+#trending-toggle {
     cursor: pointer;
     position: relative;
-    width: 200px;
-    height: 40px;
-    margin-left: 55px;
+    text-transform: uppercase;
 }
-#movie-search-btn{
-   
+
+#omdb-movie-results p {
+line-height: normal;
+padding-left: 20px;
+padding-right: 20px;
 }
+
+#omdb-movie-results img {
+    padding-bottom: 20px;
+}
+
+
 [class*="BT"]{
     width:200px;
     display:block;
@@ -150,4 +168,69 @@ canvas{
     display:block;
     position:absolute;
     margin-top:-30px;
+}
+
+
+/* media query */
+@media (min-width: 1200px) {
+    #trending, #trending-toggle {
+        margin-left:55px;
+    }
+}
+
+@media (max-width: 1200px) {
+    .photo-credit {
+        right: 10px;
+    }
+}
+
+@media (max-width: 767px) {
+    .form-group {
+        margin-bottom: 0px;
+    }
+    #movie-search {
+        position: static;
+    }
+    #movie-search-btn {
+        margin-top: 210px;
+    }
+    .photo-credit {
+        bottom: 145px;
+    }
+}
+
+@media (max-width: 575px) {
+    #movie-search-btn 
+    {
+        margin-top: 224px;
+    }
+}
+
+@media (max-width: 545px) {
+    #movie-search-btn 
+    {
+        margin-top: 203px;
+    }
+}
+
+@media (max-width: 504px) {
+    #movie-search-btn 
+    {
+        margin-top: 184px;
+    }
+}
+
+@media (max-width: 460px) {
+    #movie-search-btn 
+    {
+        margin-top: 160px;
+    }
+}
+
+@media (min-width: 992px) {
+    .youtube-video 
+    {
+        margin-left:50px;
+    }
+
 }

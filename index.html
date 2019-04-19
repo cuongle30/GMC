@@ -39,7 +39,7 @@
                         Creations</a> / CC BY 2.0</p>
             </div>
             <!--form-->
-            <div class="col-5 rounded" id="movie-search">
+            <div class="col-md-5" id="movie-search">
 
                 <form class="p-2 mb-5" id="search-form-outer">
                     <div class="form-group">
@@ -49,10 +49,10 @@
                         <i class="fas fa-film"></i>
                         <input class="form-control" id="title-input" type="text" placeholder="title">
 
-                    <button class="BT-OH-BR-R6-NF-FH-FP-TU-PT" id="movie-search-btn">
-                        <hover></hover>Search
-                    </button>
-                </div>
+                        <button class="BT-OH-BR-R6-NF-FH-FP-TU-PT" id="movie-search-btn">
+                            <hover></hover>Search
+                        </button>
+                    </div>
                 </form>
 
                 <div id="title-validation">
@@ -62,14 +62,14 @@
         </div>
 
 
-        <button id="suggested-toggle" class="col-md-4 col-sm-6 btn-outline-secondary bg-secondary rounded-bottom">
-            <p class="text-light p-1 text-center" id="trending">Trending&nbsp;&nbsp;&nbsp;<i id="see"></i></p>
+        <button id="trending-toggle"
+            class="btn-outline-secondary bg-secondary rounded-bottom text-light px-3 py-2 text-center">
+            See trending<span class="down-indicator"></span>
         </button>
-        <div id="suggested" class="my-2"></div>
+        <div id="trending" class="my-2"></div>
     </div>
     </div>
 
-    <!--these may need to be styled in the JS instead-->
     <div class="text-center" id="results">
         <div class="row p-2 mt-5 border-top justify-content-md-center">
             <div class="row">
