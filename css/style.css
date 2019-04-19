@@ -31,7 +31,7 @@ h2{
     font-size: 20px;
     color: white;
     margin: auto;
-    background: rgba(134, 134, 129, 0.5);
+    background: rgba(158, 158, 145, 0.849);
 }
 
 .photo-credit {
@@ -67,7 +67,7 @@ i {
 [class*="OH"]{overflow:hidden;}
 [class*="BR"]{border-width:2px;}
 [class*="R6"]{border-radius:6px;}
-[class*="NF"]{background:rgb(184, 206, 235);}
+[class*="NF"]{background:rgb(216, 167, 238);}
 [class*="BT"]:hover hover{  margin-left:123px;}
 [class*="TU"]{text-transform:uppercase;}
 [class*="PT"]{cursor:pointer;}
