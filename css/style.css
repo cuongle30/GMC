@@ -1,6 +1,6 @@
 body {
     font-family: Calibri,Candara,Segoe,Segoe UI,Optima,Arial,sans-serif; 
-    background: url("../images/background.png");
+    background: url("../images/background.jpg");
 }
 
 #logo-image {
@@ -83,7 +83,9 @@ i {
     height: 40px;
     margin-left: 55px;
 }
-
+#movie-search-btn{
+   
+}
 [class*="BT"]{
     width:200px;
     display:block;
