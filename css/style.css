@@ -24,10 +24,10 @@ h2{
 
 #movie-search {
     position: absolute;
-    bottom: 100px;
+    bottom: 75px;
     left: 0;
     right:0;
-    padding: 10px 20px;
+    padding:50px 20px;
     font-size: 20px;
     color: white;
     margin: auto;
