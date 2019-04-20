@@ -4,6 +4,10 @@ var year = "";
 
 // --- form validation ---
 $("#title-validation").hide();
+
+// --- movie not found notice ---
+$("#movie-not-found-msg").hide();
+
 // --- Return Trending ---
 //Click event and query Youtube for trending button title
 document.getElementById("trending").addEventListener("click", function (event) {
@@ -30,6 +34,20 @@ document.getElementById("movie-search-btn").addEventListener("click", function (
   }
 });
 
+// OMDB search for trending movies
+// displayMovieInfo function that is called when the button is clicked
+function displayMovieInfo() {
+  // Only run code if the current element has the "movie-btn" class
+  if (this.classList.contains("movie-btn")) {
+    // Set the movie search to the button id that we set earlier 
+    var movie = event.target.getAttribute("id");
+    getData(movie);
+  }
+  // display the results when someone clicks the trending movies button
+  shiftFocalPoint()
+  $("#results").show();
+}
+
 //create iframe for youtube
 function video() {
   console.log("video function call")
@@ -50,19 +68,6 @@ function onYouTubeIframeAPIReady() {
 }
 video();
 
-// OMDB search for trending movies
-// displayMovieInfo function that is called when the button is clicked
-function displayMovieInfo() {
-  // Only run code if the current element has the "movie-btn" class
-  if (this.classList.contains("movie-btn")) {
-    // Set the movie search to the button id that we set earlier 
-    var movie = event.target.getAttribute("id");
-    getData(movie);
-  }
-  // display the results when someone clicks the trending movies button
-  shiftFocalPoint()
-  $("#results").show();
-}
 // Function for building our ajax response
 function renderMovieElements(response) {
   // Creating a div to hold the movie
@@ -103,13 +108,12 @@ function renderMovieElements(response) {
   // storing the second rating source:
   var secondRatingSource = response.Ratings[1].Source;
   // storing the second source rating:
-  var secondSourceRating = response.Ratings[1].Value; 
+  var secondSourceRating = response.Ratings[1].Value;
   // creating an element to hold the Rotten Tomatoes rating
   var pSecondSourceRating = document.createElement("p");
   pSecondSourceRating.innerHTML = `<b>${secondRatingSource}: </b> ${secondSourceRating}`;
   // displaying the Rotten Tomatoes rating
   movieDiv.appendChild(pSecondSourceRating);
-
 
   // storing the genre data
   var genre = response.Genre;
@@ -186,6 +190,9 @@ var uniqueMovies = []
 // hide the trending buttons until someone clicks
 $("#trending").hide();
 
+// hide the results area until someone clicks a button or searches for a movie
+$("#results").hide();
+
 // when someone clicks the trending button
 $("#trending-toggle").click(function () {
   console.log("trending movie has been clicked");
@@ -204,13 +211,13 @@ $("#trending-toggle").click(function () {
 
   // slide the trending buttons down and change the text of the trending toggle
   var trendingToggleText = $(this);
-  $("#trending").slideToggle('slow', function() {
+  $("#trending").slideToggle('slow', function () {
     if ($(this).is(':visible')) {
       trendingToggleText.html(`Hide trending<span class="up-indicator"></span>`);
     } else {
       trendingToggleText.html(`See trending<span class="down-indicator"></span>`);
     }
-  });  
+  });
 });
 
 // function for shift focal point
@@ -230,110 +237,7 @@ function shiftFocalPoint() {
   $("#trending").hide();
   // change the margin at media query for the search button
   $("#movie-search-btn").removeClass("orig-focus").addClass("shift-focused");
-
 }
-
-//create a function to help remove duplcations pulled from: https://www.tutorialrepublic.com/faq/how-to-remove-duplicate-values-from-a-javascript-array.php
-function getUnique(array) {
-  var uniqueArray = [];
-  for (i = 0; i < array.length; i++) {
-    if (uniqueArray.indexOf(array[i]) === -1) {
-      uniqueArray.push(array[i]);
-    }
-  }
-  return uniqueArray;
-}
-
-// function to loop through unqie array and make buttons
-function addUniqueButtons() {
-  var i;
-  for (i = 0; i < 20; i++) {
-    let newBtn = document.createElement("BUTTON")
-    newBtn.innerHTML = uniqueMovies[i];
-    newBtn.onclick = displayMovieInfo;
-
-    newBtn.setAttribute("class", "movie-btn btn btn-outline-secondary");
-
-    newBtn.setAttribute("id", uniqueMovies[i]);
-    document.getElementById("trending").appendChild(newBtn);
-  }
-}
-
-// function to clear existing buttons
-function clearExistingButtons() {
-  $("#trending").empty();
-}
-// hide the results area until someone clicks a button or searches for a movie
-$("#results").hide();
-
-// --- firebase ---
-// Initialize Firebase
-var config = {
-  apiKey: "AIzaSyBWpkmTPb8Jz22vRZY3PEH4HlmPBlN_-LY",
-  authDomain: "great-movies-and-chill.firebaseapp.com",
-  databaseURL: "https://great-movies-and-chill.firebaseio.com",
-  projectId: "great-movies-and-chill",
-  storageBucket: "great-movies-and-chill.appspot.com",
-  messagingSenderId: "511630558004"
-};
-
-firebase.initializeApp(config);
-
-var database = firebase.database();
-
-// when someone does a search -- may be redundant -- consider looping together with omdb and youtube search
-document.getElementById("movie-search-btn").addEventListener("click", function (event) {
-  event.preventDefault();
-
-  // Variable to grab data from inside button
-  var titleSearch = document.getElementById("title-input").value.trim();
-
-  // data validation
-  if (titleSearch !== "") {
-
-    // create local "temporary" object for holding movie searches
-    var newMovie = {
-      titleSearch: titleSearch
-    };
-
-    // upload new movie data to the database
-    database.ref().push(newMovie);
-
-    // log to console
-    console.log(newMovie.titleSearch);
-
-    // --- UI/UX ---
-    // clear the text field after someone searches
-    document.getElementById("title-input").value = "";
-  }
-})
-
-// create Firebase event for adding movie to the database
-database.ref().on("child_added", function (childSnapshot) {
-  console.log(childSnapshot.val());
-
-  // store everything into a variable
-  var titleSearch = childSnapshot.val().titleSearch.toUpperCase();
-
-  // displayMovieInfo -- this part is important! how can i get this to compare with what already exists in the html (that it just created)? the firebase would be loaded but the html wouldn't 
-  console.log(titleSearch);
-
-  // create temp object of our values
-  let tempMovieData = {
-    titleSearch: titleSearch
-  };
-
-  console.log(tempMovieData);
-  // loop through the childSnapshot object and add buttons
-  for (let prop of Object.values(tempMovieData)) {
-    let newBtn = document.createElement("BUTTON")
-    newBtn.innerHTML = prop;
-    newBtn.onclick = displayMovieInfo;
-    newBtn.classList.add("movie-btn");
-    newBtn.setAttribute("id", prop);
-    document.getElementById("trending").appendChild(newBtn);
-  }
-})
 
 //Run Queries for OMDB and Youtube
 function getData(recommended) {
@@ -349,6 +253,7 @@ function getData(recommended) {
       .then((response) => {
         if (response.Error) {
           console.error(response.Error);
+          movieNotFound();
         } else {
           year = response.Year;
           renderMovieElements(response);
@@ -399,5 +304,114 @@ function getData(recommended) {
   }
 }
 
+// create a function for when the search doesn't come back with an omdb response
+function movieNotFound() {
+  $("#results").hide();
+  $('#movie-not-found-msg').slideDown("slow");
+  $('#movie-not-found-msg').slideUp(3000);
+}
 
+// --- firebase ---
+// Initialize Firebase
+var config = {
+  apiKey: "AIzaSyBWpkmTPb8Jz22vRZY3PEH4HlmPBlN_-LY",
+  authDomain: "great-movies-and-chill.firebaseapp.com",
+  databaseURL: "https://great-movies-and-chill.firebaseio.com",
+  projectId: "great-movies-and-chill",
+  storageBucket: "great-movies-and-chill.appspot.com",
+  messagingSenderId: "511630558004"
+};
+
+firebase.initializeApp(config);
+
+var database = firebase.database();
+
+// when someone does a search -- 
+document.getElementById("movie-search-btn").addEventListener("click", pushFirebaseFunction);
+
+// create a function fo pushing the search to the firebase
+function pushFirebaseFunction () {
+  event.preventDefault();
+
+  // Variable to grab data from inside button
+  var titleSearch = document.getElementById("title-input").value.trim();
+
+  // data validation
+  if (titleSearch !== "") {
+
+    // create local "temporary" object for holding movie searches
+    var newMovie = {
+      titleSearch: titleSearch
+    };
+
+    // upload new movie data to the database
+    database.ref().push(newMovie);
+
+    // log to console
+    console.log(newMovie.titleSearch);
+
+    // --- UI/UX ---
+    // clear the text field after someone searches
+    document.getElementById("title-input").value = "";
+  }
+}
+
+// create Firebase event for adding movie to the database
+database.ref().on("child_added", function (childSnapshot) {
+  console.log(childSnapshot.val());
+
+  // store everything into a variable
+  var titleSearch = childSnapshot.val().titleSearch.toUpperCase();
+
+  // displayMovieInfo -- this part is important! how can i get this to compare with what already exists in the html (that it just created)? the firebase would be loaded but the html wouldn't 
+  console.log(titleSearch);
+
+  // create temp object of our values
+  let tempMovieData = {
+    titleSearch: titleSearch
+  };
+
+  console.log(tempMovieData);
+  // loop through the childSnapshot object and add buttons
+  for (let prop of Object.values(tempMovieData)) {
+    let newBtn = document.createElement("BUTTON")
+    newBtn.innerHTML = prop;
+    newBtn.onclick = displayMovieInfo;
+    newBtn.classList.add("movie-btn");
+    newBtn.setAttribute("id", prop);
+    document.getElementById("trending").appendChild(newBtn);
+  }
+})
+
+
+//create a function to help remove duplcations pulled from: https://www.tutorialrepublic.com/faq/how-to-remove-duplicate-values-from-a-javascript-array.php
+function getUnique(array) {
+  var uniqueArray = [];
+  for (i = 0; i < array.length; i++) {
+    if (uniqueArray.indexOf(array[i]) === -1) {
+      uniqueArray.push(array[i]);
+    }
+  }
+  return uniqueArray;
+}
+
+// function to loop through unqie array and make buttons
+function addUniqueButtons() {
+  var i;
+  for (i = 0; i < 20; i++) {
+    let newBtn = document.createElement("BUTTON")
+    newBtn.innerHTML = uniqueMovies[i];
+    newBtn.onclick = displayMovieInfo;
+
+    newBtn.setAttribute("class", "movie-btn btn btn-outline-secondary");
+
+    newBtn.setAttribute("id", uniqueMovies[i]);
+    document.getElementById("trending").appendChild(newBtn);
+  }
+}
+
+// function to clear existing buttons
+function clearExistingButtons() {
+  $("#trending").empty();
+}
 
