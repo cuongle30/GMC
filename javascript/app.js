@@ -90,6 +90,27 @@ function renderMovieElements(response) {
   // Appending the image
   movieDiv.appendChild(posterImage);
 
+  // storing the IMDB rating
+  var IMDBrating = response.imdbRating;
+
+  // creating an element to hold the IMDB rating
+  var pIMDBrating = document.createElement("p");
+  pIMDBrating.innerHTML = `<b>IMDb Score: </b>${IMDBrating}`;
+
+  // displaying the IMDB rating
+  movieDiv.appendChild(pIMDBrating);
+
+  // storing the second rating source:
+  var secondRatingSource = response.Ratings[1].Source;
+  // storing the second source rating:
+  var secondSourceRating = response.Ratings[1].Value; 
+  // creating an element to hold the Rotten Tomatoes rating
+  var pSecondSourceRating = document.createElement("p");
+  pSecondSourceRating.innerHTML = `<b>${secondRatingSource}: </b> ${secondSourceRating}`;
+  // displaying the Rotten Tomatoes rating
+  movieDiv.appendChild(pSecondSourceRating);
+
+
   // storing the genre data
   var genre = response.Genre;
 
@@ -204,12 +225,11 @@ function shiftFocalPoint() {
   // change the toggle to show
   var trendingToggleElement = $("#trending-toggle");
   trendingToggleElement.html(`See trending<span class="down-indicator"></span>`);
-
   document.getElementById("trending").style.marginLeft = "0px";
   // hide the trending buttons until someone clicks
   $("#trending").hide();
-
-  // !!!!!!!!!!!!!!!!try to do a media query for the search button https://www.w3schools.com/jsref/met_win_matchmedia.asp
+  // change the margin at media query for the search button
+  $("#movie-search-btn").removeClass("orig-focus").addClass("shift-focused");
 
 }
 
