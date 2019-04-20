@@ -8,16 +8,8 @@ $("#title-validation").hide();
 // --- movie not found notice ---
 $("#movie-not-found-msg").hide();
 
-// --- Return Trending ---
-//Click event and query Youtube for trending button title
-document.getElementById("trending").addEventListener("click", function (event) {
-  event.preventDefault();
-  var recommended = event.target.innerText
-  getData(recommended);
-});
 
-
-//  --- Return Searches and push to Firebase---
+//  --- Return Searches ---
 //Click event and query YouTube for Search button
 document.getElementById("movie-search-btn").addEventListener("click", function (event) {
   event.preventDefault();
@@ -33,25 +25,8 @@ document.getElementById("movie-search-btn").addEventListener("click", function (
     // display the results when someone does a search
     $("#results").show();
     shiftFocalPoint()
-
-    // // --- push to firebase ---
-    // // create local "temporary" object for holding movie searches
-    // var newMovie = {
-    //   titleSearch: titleSearch
-    // };
-
-    // // upload new movie data to the database
-    // database.ref().push(newMovie);
-
-    // // log to console
-    // console.log(newMovie.titleSearch);
-
-    // // --- UI/UX ---
-    // // clear the text field after someone searches
-    // document.getElementById("title-input").value = "";
   }
 });
-
 
 
 // OMDB search for trending movies
@@ -61,7 +36,7 @@ function displayMovieInfo() {
   if (this.classList.contains("movie-btn")) {
     // Set the movie search to the button id that we set earlier 
     var movie = event.target.getAttribute("id");
-    getData(movie);
+    getButtonData(movie);
   }
   // display the results when someone clicks the trending movies button
   shiftFocalPoint()
@@ -259,9 +234,9 @@ function shiftFocalPoint() {
   $("#movie-search-btn").removeClass("orig-focus").addClass("shift-focused");
 }
 
-//Run Queries for OMDB and Youtube
-function getData(recommended) {
-  var queryURL = `https://www.omdbapi.com/?t="${recommended}&apikey=d34a771e`;
+//Run Queries for OMDB and Youtube SEARCHES -- this one pushes to firebase and prevents errors from going to firebase
+function getData(x) {
+  var queryURL = `https://www.omdbapi.com/?t="${x}&apikey=d34a771e`;
   var youtubeQueryURL = "";
   // Creating an AJAX call for the specific movie button being clicked
   // Check if fetch is supported in the browser. If so use fetch 
@@ -275,11 +250,11 @@ function getData(recommended) {
           console.error(response.Error);
           movieNotFound();
         } else {
+          pushToFirebase()
           year = response.Year;
           renderMovieElements(response);
-          youtubeQueryURL = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${recommended + " official trailer"}+${year}&key=AIzaSyDmKkf_-rWtH9yJ4insi91j9DWhxwj1e-o`
+          youtubeQueryURL = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${x + " official trailer"}+${year}&key=AIzaSyDmKkf_-rWtH9yJ4insi91j9DWhxwj1e-o`
           youtubeFetch();
-          pushToFirebase();
         }
       });
   } else { // if fetch is not supported use XHR
@@ -332,16 +307,85 @@ function getData(recommended) {
     var newMovie = {
       titleSearch: titleSearch
     };
+    console.log("the new move going into firebase is" + newMovie);
+      // upload new movie data to the database
+      database.ref().push(newMovie);
 
-    // upload new movie data to the database
-    database.ref().push(newMovie);
+      // log to console
+      console.log(newMovie.titleSearch);
 
-    // log to console
-    console.log(newMovie.titleSearch);
+      // --- UI/UX ---
+      // clear the text field after someone searches
+      document.getElementById("title-input").value = "";
 
-    // --- UI/UX ---
-    // clear the text field after someone searches
-    document.getElementById("title-input").value = "";
+  }
+}
+
+
+// --- run queries for buttons that DON'T call to firebase, couldn't put in the same function the search function needs to consider error responses. the button function does not need to worry about errors because only NONERRORS became buttons. running a search and a button on the same function will create a blank entry in firebase causing an empty button. 
+//Run Queries for OMDB and Youtube
+function getButtonData(x) {
+  var queryURL = `https://www.omdbapi.com/?t="${x}&apikey=d34a771e`;
+  var youtubeQueryURL = "";
+  // Creating an AJAX call for the specific movie button being clicked
+  // Check if fetch is supported in the browser. If so use fetch 
+  if (window.fetch) {
+    fetch(queryURL, {
+      method: "GET"
+    })
+      .then((result) => result.json())
+      .then((response) => {
+        if (response.Error) {
+          console.error(response.Error);
+          movieNotFound();
+        } else {
+          year = response.Year;
+          renderMovieElements(response);
+          youtubeQueryURL = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${x + " official trailer"}+${year}&key=AIzaSyDmKkf_-rWtH9yJ4insi91j9DWhxwj1e-o`
+          youtubeFetch();
+        }
+      });
+  } else { // if fetch is not supported use XHR
+    const xhr = new XMLHttpRequest();
+    xhr.open("GET", queryURL);
+    xhr.onload = event => {
+      if (xhr.readyState === 4) {
+        if (xhr.status === 200) {
+          let response = JSON.parse(xhr.response)
+          year = response.Year;
+          renderMovieElements(response);
+        } else {
+          console.error(xhr.responseText);
+          movieNotFound();
+        }
+      }
+    };
+    xhr.onerror = event => {
+      console.error(xhr.responseText);
+    };
+    xhr.send();
+  }
+
+  // create a function for performing a request with the queryURL for youtube
+  function youtubeFetch() {
+    fetch(youtubeQueryURL, {
+      method: "GET"
+    })
+      // Return JsonAfter data comes back from the request
+      .then(function (response) {
+        return response.json()
+      })
+      .then(function (response) {
+        //Settimeout to allow for response to pull
+        document.addEventListener(
+          'DOMContentLoaded', () => setTimeout(initializeFreshchatWidget, 100)
+        )
+        console.log("youtube api responded")
+        console.log(response)
+        //grab youtube videos from query
+        var youtubeVideos = response.items[0].id.videoId
+        ytplayer.loadVideoById({ videoId: youtubeVideos })
+      });
   }
 }
 
@@ -350,6 +394,9 @@ function movieNotFound() {
   $("#results").hide();
   $('#movie-not-found-msg').slideDown("slow");
   $('#movie-not-found-msg').slideUp(3000);
+   // --- UI/UX ---
+      // clear the text field after someone searches
+      document.getElementById("title-input").value = "";
 }
 
 // --- firebase ---

@@ -1,18 +1,20 @@
 body {
     font-family: Calibri,Candara,Segoe,Segoe UI,Optima,Arial,sans-serif; 
-    background: url("../images/background.jpg");
+    background: #0d0d0d;
 }
 
 #logo-image {
     display:inline-block;
 }
-h5{
+#company-name{
     display:inline-block;
-    color: rgb(31, 93, 187);
+    margin-left: 10px;
+    color: rgb(1, 46, 105);
+    font-family: "alternate-gothic-no-2-d","Oswald","Arial Narrow";
     font-size: 45px;
     font-weight: bold;
     vertical-align: bottom;
-    text-shadow: 2.5px 2.5px rgb(153, 152, 152);
+    text-shadow: 1px 1px 0 rgba(0,0,0,0.4), 0 0 15px rgba(255,255,255,0.8)
 }
 p {
     color: white;
