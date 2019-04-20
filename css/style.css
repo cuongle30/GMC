@@ -16,10 +16,8 @@ body {
     vertical-align: bottom;
     text-shadow: 1px 1px 0 rgba(0,0,0,0.4), 0 0 15px rgba(255,255,255,0.8)
 }
-p {
-    color: white;
-}
-h2 {
+
+h2, p {
     color: white;
 }
 
@@ -54,9 +52,7 @@ h2 {
     color: white;
     background:rgb(1, 46, 105);
     margin-right: 10px;
-    margin-bottom: 10px;
-    
-    
+    margin-bottom: 10px;  
 }
 
 #enticing-image-holder {
@@ -101,7 +97,7 @@ padding-right: 20px;
     padding-bottom: 20px;
 }
 
-
+/* shimmer on the search button */
 [class*="BT"]{
     width:200px;
     display:block;
@@ -188,9 +184,9 @@ canvas{
     }    
     .shift-focused {
         top: 114px;
-       
     }
 }
+
 @media (max-width: 767px) {
     .form-group {
         margin-bottom: 0px;
@@ -209,7 +205,6 @@ canvas{
     .photo-credit {
         bottom: 145px;
     }
-
 }
 
 @media (max-width: 575px) {
@@ -251,5 +246,4 @@ canvas{
     {
         margin-left:50px;
     }
-
 }

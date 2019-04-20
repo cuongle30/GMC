@@ -8,7 +8,6 @@ $("#title-validation").hide();
 // --- movie not found notice ---
 $("#movie-not-found-msg").hide();
 
-
 //  --- Return Searches ---
 //Click event and query YouTube for Search button
 document.getElementById("movie-search-btn").addEventListener("click", function (event) {
@@ -27,7 +26,6 @@ document.getElementById("movie-search-btn").addEventListener("click", function (
     shiftFocalPoint()
   }
 });
-
 
 // OMDB search for trending movies
 // displayMovieInfo function that is called when the button is clicked
@@ -102,11 +100,14 @@ function renderMovieElements(response) {
 
   // storing the second rating source:
   var secondRatingSource = response.Ratings[1].Source;
+
   // storing the second source rating:
   var secondSourceRating = response.Ratings[1].Value;
+
   // creating an element to hold the Rotten Tomatoes rating
   var pSecondSourceRating = document.createElement("p");
   pSecondSourceRating.innerHTML = `<b>${secondRatingSource}: </b> ${secondSourceRating}`;
+
   // displaying the Rotten Tomatoes rating
   movieDiv.appendChild(pSecondSourceRating);
 
@@ -173,65 +174,6 @@ function renderMovieElements(response) {
   // Putting the entire movie above the previous movies
   let movieParent = document.querySelector("#omdb-movie-results");
   movieParent.replaceChild(movieDiv, movieParent.firstChild);
-}
-
-// --- UX/UI ---
-// --- to remove duplicate buttons ---
-// globally accessible empty firebase array to add to 
-var firebaseMovies = []
-// an array to store only the unique values
-var uniqueMovies = []
-
-// hide the trending buttons until someone clicks
-$("#trending").hide();
-
-// hide the results area until someone clicks a button or searches for a movie
-$("#results").hide();
-
-// when someone clicks the trending button
-$("#trending-toggle").click(function () {
-  console.log("trending movie has been clicked");
-  // add everything in the trending div to an array
-  $(".movie-btn").each(function () {
-    console.log("this id is: " + this.id);
-    firebaseMovies.splice(0, 0, this.id);
-  })
-  console.log("the firebaseMovies array: " + firebaseMovies);
-
-  // capture only the unique values
-  uniqueMovies = getUnique(firebaseMovies);
-  console.log("the new unique movies array: " + uniqueMovies);
-  clearExistingButtons();
-  addUniqueButtons();
-
-  // slide the trending buttons down and change the text of the trending toggle
-  var trendingToggleText = $(this);
-  $("#trending").slideToggle('slow', function () {
-    if ($(this).is(':visible')) {
-      trendingToggleText.html(`Hide trending<span class="up-indicator"></span>`);
-    } else {
-      trendingToggleText.html(`See trending<span class="down-indicator"></span>`);
-    }
-  });
-});
-
-// function for shift focal point
-function shiftFocalPoint() {
-  document.getElementById("enticing-image").style.height = "70px";
-  $(".photo-credit").hide();
-  $("#enticing-image").hide();
-  document.getElementById("movie-search").removeAttribute("class");
-  document.getElementById("movie-search").setAttribute("class", "col-12 rounded");
-  document.getElementById("movie-search").style.position = "static";
-  document.getElementById("trending-toggle").style.marginLeft = "0px";
-  // change the toggle to show
-  var trendingToggleElement = $("#trending-toggle");
-  trendingToggleElement.html(`See trending<span class="down-indicator"></span>`);
-  document.getElementById("trending").style.marginLeft = "0px";
-  // hide the trending buttons until someone clicks
-  $("#trending").hide();
-  // change the margin at media query for the search button
-  $("#movie-search-btn").removeClass("orig-focus").addClass("shift-focused");
 }
 
 //Run Queries for OMDB and Youtube SEARCHES -- this one pushes to firebase and prevents errors from going to firebase
@@ -308,19 +250,18 @@ function getData(x) {
       titleSearch: titleSearch
     };
     console.log("the new move going into firebase is" + newMovie);
-      // upload new movie data to the database
-      database.ref().push(newMovie);
+    // upload new movie data to the database
+    database.ref().push(newMovie);
 
-      // log to console
-      console.log(newMovie.titleSearch);
+    // log to console
+    console.log(newMovie.titleSearch);
 
-      // --- UI/UX ---
-      // clear the text field after someone searches
-      document.getElementById("title-input").value = "";
+    // --- UI/UX ---
+    // clear the text field after someone searches
+    document.getElementById("title-input").value = "";
 
   }
 }
-
 
 // --- run queries for buttons that DON'T call to firebase, couldn't put in the same function the search function needs to consider error responses. the button function does not need to worry about errors because only NONERRORS became buttons. running a search and a button on the same function will create a blank entry in firebase causing an empty button. 
 //Run Queries for OMDB and Youtube
@@ -389,16 +330,6 @@ function getButtonData(x) {
   }
 }
 
-// create a function for when the search doesn't come back with an omdb response
-function movieNotFound() {
-  $("#results").hide();
-  $('#movie-not-found-msg').slideDown("slow");
-  $('#movie-not-found-msg').slideUp(3000);
-   // --- UI/UX ---
-      // clear the text field after someone searches
-      document.getElementById("title-input").value = "";
-}
-
 // --- firebase ---
 // Initialize Firebase
 var config = {
@@ -413,7 +344,6 @@ var config = {
 firebase.initializeApp(config);
 
 var database = firebase.database();
-
 
 // create Firebase event for adding movie to the database
 database.ref().on("child_added", function (childSnapshot) {
@@ -441,6 +371,75 @@ database.ref().on("child_added", function (childSnapshot) {
     document.getElementById("trending").appendChild(newBtn);
   }
 })
+
+// --- UX/UI ---
+// --- to remove duplicate buttons ---
+// globally accessible empty firebase array to add to 
+var firebaseMovies = []
+// an array to store only the unique values
+var uniqueMovies = []
+
+// hide the trending buttons until someone clicks
+$("#trending").hide();
+
+// hide the results area until someone clicks a button or searches for a movie
+$("#results").hide();
+
+// when someone clicks the trending button
+$("#trending-toggle").click(function () {
+  console.log("trending movie has been clicked");
+  // add everything in the trending div to an array
+  $(".movie-btn").each(function () {
+    console.log("this id is: " + this.id);
+    firebaseMovies.splice(0, 0, this.id);
+  })
+  console.log("the firebaseMovies array: " + firebaseMovies);
+
+  // capture only the unique values
+  uniqueMovies = getUnique(firebaseMovies);
+  console.log("the new unique movies array: " + uniqueMovies);
+  clearExistingButtons();
+  addUniqueButtons();
+
+  // slide the trending buttons down and change the text of the trending toggle
+  var trendingToggleText = $(this);
+  $("#trending").slideToggle('slow', function () {
+    if ($(this).is(':visible')) {
+      trendingToggleText.html(`Hide trending<span class="up-indicator"></span>`);
+    } else {
+      trendingToggleText.html(`See trending<span class="down-indicator"></span>`);
+    }
+  });
+});
+
+// function for shift focal point
+function shiftFocalPoint() {
+  document.getElementById("enticing-image").style.height = "70px";
+  $(".photo-credit").hide();
+  $("#enticing-image").hide();
+  document.getElementById("movie-search").removeAttribute("class");
+  document.getElementById("movie-search").setAttribute("class", "col-12 rounded");
+  document.getElementById("movie-search").style.position = "static";
+  document.getElementById("trending-toggle").style.marginLeft = "0px";
+  // change the toggle to show
+  var trendingToggleElement = $("#trending-toggle");
+  trendingToggleElement.html(`See trending<span class="down-indicator"></span>`);
+  document.getElementById("trending").style.marginLeft = "0px";
+  // hide the trending buttons until someone clicks
+  $("#trending").hide();
+  // change the margin at media query for the search button
+  $("#movie-search-btn").removeClass("orig-focus").addClass("shift-focused");
+}
+
+// create a function for when the search doesn't come back with an omdb response
+function movieNotFound() {
+  $("#results").hide();
+  $('#movie-not-found-msg').slideDown("slow");
+  $('#movie-not-found-msg').slideUp(3000);
+  // --- UI/UX ---
+  // clear the text field after someone searches
+  document.getElementById("title-input").value = "";
+}
 
 //create a function to help remove duplcations pulled from: https://www.tutorialrepublic.com/faq/how-to-remove-duplicate-values-from-a-javascript-array.php
 function getUnique(array) {
