@@ -8,20 +8,13 @@ $("#title-validation").hide();
 // --- movie not found notice ---
 $("#movie-not-found-msg").hide();
 
-// --- Return Trending ---
-//Click event and query Youtube for trending button title
-document.getElementById("trending").addEventListener("click", function (event) {
-  event.preventDefault();
-  var recommended = event.target.innerText
-  getData(recommended);
-});
-
 //  --- Return Searches ---
 //Click event and query YouTube for Search button
 document.getElementById("movie-search-btn").addEventListener("click", function (event) {
   event.preventDefault();
   // Variable to grab data from user search
-  var titleSearch = document.getElementById("title-input").value.trim();
+  titleSearch = document.getElementById("title-input").value.trim();
+
   // form validation
   if (titleSearch == "") {
     $('#title-validation').slideDown("slow");
@@ -41,7 +34,7 @@ function displayMovieInfo() {
   if (this.classList.contains("movie-btn")) {
     // Set the movie search to the button id that we set earlier 
     var movie = event.target.getAttribute("id");
-    getData(movie);
+    getButtonData(movie);
   }
   // display the results when someone clicks the trending movies button
   shiftFocalPoint()
@@ -107,11 +100,14 @@ function renderMovieElements(response) {
 
   // storing the second rating source:
   var secondRatingSource = response.Ratings[1].Source;
+
   // storing the second source rating:
   var secondSourceRating = response.Ratings[1].Value;
+
   // creating an element to hold the Rotten Tomatoes rating
   var pSecondSourceRating = document.createElement("p");
   pSecondSourceRating.innerHTML = `<b>${secondRatingSource}: </b> ${secondSourceRating}`;
+
   // displaying the Rotten Tomatoes rating
   movieDiv.appendChild(pSecondSourceRating);
 
@@ -180,6 +176,202 @@ function renderMovieElements(response) {
   movieParent.replaceChild(movieDiv, movieParent.firstChild);
 }
 
+//Run Queries for OMDB and Youtube SEARCHES -- this one pushes to firebase and prevents errors from going to firebase
+function getData(x) {
+  var queryURL = `https://www.omdbapi.com/?t="${x}&apikey=d34a771e`;
+  var youtubeQueryURL = "";
+  // Creating an AJAX call for the specific movie button being clicked
+  // Check if fetch is supported in the browser. If so use fetch 
+  if (window.fetch) {
+    fetch(queryURL, {
+      method: "GET"
+    })
+      .then((result) => result.json())
+      .then((response) => {
+        if (response.Error) {
+          console.error(response.Error);
+          movieNotFound();
+        } else {
+          pushToFirebase()
+          year = response.Year;
+          renderMovieElements(response);
+          youtubeQueryURL = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${x + " official trailer"}+${year}&key=AIzaSyDmKkf_-rWtH9yJ4insi91j9DWhxwj1e-o`
+          youtubeFetch();
+        }
+      });
+  } else { // if fetch is not supported use XHR
+    const xhr = new XMLHttpRequest();
+    xhr.open("GET", queryURL);
+    xhr.onload = event => {
+      if (xhr.readyState === 4) {
+        if (xhr.status === 200) {
+          let response = JSON.parse(xhr.response)
+          year = response.Year;
+          renderMovieElements(response);
+        } else {
+          console.error(xhr.responseText);
+          movieNotFound();
+        }
+      }
+    };
+    xhr.onerror = event => {
+      console.error(xhr.responseText);
+    };
+    xhr.send();
+  }
+
+  // create a function for performing a request with the queryURL for youtube
+  function youtubeFetch() {
+    fetch(youtubeQueryURL, {
+      method: "GET"
+    })
+      // Return JsonAfter data comes back from the request
+      .then(function (response) {
+        return response.json()
+      })
+      .then(function (response) {
+        //Settimeout to allow for response to pull
+        document.addEventListener(
+          'DOMContentLoaded', () => setTimeout(initializeFreshchatWidget, 100)
+        )
+        console.log("youtube api responded")
+        console.log(response)
+        //grab youtube videos from query
+        var youtubeVideos = response.items[0].id.videoId
+        ytplayer.loadVideoById({ videoId: youtubeVideos })
+      });
+  }
+
+  // create a function for pushing to firebase
+  // --- push to firebase ---
+  function pushToFirebase() {
+    // create local "temporary" object for holding movie searches
+    var newMovie = {
+      titleSearch: titleSearch
+    };
+    console.log("the new move going into firebase is" + newMovie);
+    // upload new movie data to the database
+    database.ref().push(newMovie);
+
+    // log to console
+    console.log(newMovie.titleSearch);
+
+    // --- UI/UX ---
+    // clear the text field after someone searches
+    document.getElementById("title-input").value = "";
+
+  }
+}
+
+// --- run queries for buttons that DON'T call to firebase, couldn't put in the same function the search function needs to consider error responses. the button function does not need to worry about errors because only NONERRORS became buttons. running a search and a button on the same function will create a blank entry in firebase causing an empty button. 
+//Run Queries for OMDB and Youtube
+function getButtonData(x) {
+  var queryURL = `https://www.omdbapi.com/?t="${x}&apikey=d34a771e`;
+  var youtubeQueryURL = "";
+  // Creating an AJAX call for the specific movie button being clicked
+  // Check if fetch is supported in the browser. If so use fetch 
+  if (window.fetch) {
+    fetch(queryURL, {
+      method: "GET"
+    })
+      .then((result) => result.json())
+      .then((response) => {
+        if (response.Error) {
+          console.error(response.Error);
+          movieNotFound();
+        } else {
+          year = response.Year;
+          renderMovieElements(response);
+          youtubeQueryURL = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${x + " official trailer"}+${year}&key=AIzaSyDmKkf_-rWtH9yJ4insi91j9DWhxwj1e-o`
+          youtubeFetch();
+        }
+      });
+  } else { // if fetch is not supported use XHR
+    const xhr = new XMLHttpRequest();
+    xhr.open("GET", queryURL);
+    xhr.onload = event => {
+      if (xhr.readyState === 4) {
+        if (xhr.status === 200) {
+          let response = JSON.parse(xhr.response)
+          year = response.Year;
+          renderMovieElements(response);
+        } else {
+          console.error(xhr.responseText);
+          movieNotFound();
+        }
+      }
+    };
+    xhr.onerror = event => {
+      console.error(xhr.responseText);
+    };
+    xhr.send();
+  }
+
+  // create a function for performing a request with the queryURL for youtube
+  function youtubeFetch() {
+    fetch(youtubeQueryURL, {
+      method: "GET"
+    })
+      // Return JsonAfter data comes back from the request
+      .then(function (response) {
+        return response.json()
+      })
+      .then(function (response) {
+        //Settimeout to allow for response to pull
+        document.addEventListener(
+          'DOMContentLoaded', () => setTimeout(initializeFreshchatWidget, 100)
+        )
+        console.log("youtube api responded")
+        console.log(response)
+        //grab youtube videos from query
+        var youtubeVideos = response.items[0].id.videoId
+        ytplayer.loadVideoById({ videoId: youtubeVideos })
+      });
+  }
+}
+
+// --- firebase ---
+// Initialize Firebase
+var config = {
+  apiKey: "AIzaSyBWpkmTPb8Jz22vRZY3PEH4HlmPBlN_-LY",
+  authDomain: "great-movies-and-chill.firebaseapp.com",
+  databaseURL: "https://great-movies-and-chill.firebaseio.com",
+  projectId: "great-movies-and-chill",
+  storageBucket: "great-movies-and-chill.appspot.com",
+  messagingSenderId: "511630558004"
+};
+
+firebase.initializeApp(config);
+
+var database = firebase.database();
+
+// create Firebase event for adding movie to the database
+database.ref().on("child_added", function (childSnapshot) {
+  console.log(childSnapshot.val());
+
+  // store everything into a variable
+  var titleSearch = childSnapshot.val().titleSearch.toUpperCase();
+
+  // displayMovieInfo -- this part is important! how can i get this to compare with what already exists in the html (that it just created)? the firebase would be loaded but the html wouldn't 
+  console.log(titleSearch);
+
+  // create temp object of our values
+  let tempMovieData = {
+    titleSearch: titleSearch
+  };
+
+  console.log(tempMovieData);
+  // loop through the childSnapshot object and add buttons
+  for (let prop of Object.values(tempMovieData)) {
+    let newBtn = document.createElement("BUTTON")
+    newBtn.innerHTML = prop;
+    newBtn.onclick = displayMovieInfo;
+    newBtn.classList.add("movie-btn");
+    newBtn.setAttribute("id", prop);
+    document.getElementById("trending").appendChild(newBtn);
+  }
+})
+
 // --- UX/UI ---
 // --- to remove duplicate buttons ---
 // globally accessible empty firebase array to add to 
@@ -239,150 +431,15 @@ function shiftFocalPoint() {
   $("#movie-search-btn").removeClass("orig-focus").addClass("shift-focused");
 }
 
-//Run Queries for OMDB and Youtube
-function getData(recommended) {
-  var queryURL = `https://www.omdbapi.com/?t="${recommended}&apikey=d34a771e`;
-  var youtubeQueryURL = "";
-  // Creating an AJAX call for the specific movie button being clicked
-  // Check if fetch is supported in the browser. If so use fetch 
-  if (window.fetch) {
-    fetch(queryURL, {
-      method: "GET"
-    })
-      .then((result) => result.json())
-      .then((response) => {
-        if (response.Error) {
-          console.error(response.Error);
-          movieNotFound();
-        } else {
-          year = response.Year;
-          renderMovieElements(response);
-          youtubeQueryURL = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${recommended + " official trailer"}+${year}&key=AIzaSyDmKkf_-rWtH9yJ4insi91j9DWhxwj1e-o`
-          youtubeFetch();
-        }
-      });
-  } else { // if fetch is not supported use XHR
-    const xhr = new XMLHttpRequest();
-    xhr.open("GET", queryURL);
-    xhr.onload = event => {
-      if (xhr.readyState === 4) {
-        if (xhr.status === 200) {
-          let response = JSON.parse(xhr.response)
-          year = response.Year;
-          renderMovieElements(response);
-        } else {
-          console.error(xhr.responseText);
-        }
-      }
-    };
-    xhr.onerror = event => {
-      console.error(xhr.responseText);
-    };
-    xhr.send();
-  }
-
-  // create a function for performing a request with the queryURL for youtube
-  function youtubeFetch() {
-    fetch(youtubeQueryURL, {
-      method: "GET"
-    })
-      // Return JsonAfter data comes back from the request
-      .then(function (response) {
-        return response.json()
-      })
-      .then(function (response) {
-        //Settimeout to allow for response to pull
-        document.addEventListener(
-          'DOMContentLoaded', () => setTimeout(initializeFreshchatWidget, 100)
-        )
-        console.log("youtube api responded")
-        console.log(response)
-        //grab youtube videos from query
-        var youtubeVideos = response.items[0].id.videoId
-        ytplayer.loadVideoById({ videoId: youtubeVideos })
-      });
-  }
-}
-
 // create a function for when the search doesn't come back with an omdb response
 function movieNotFound() {
   $("#results").hide();
   $('#movie-not-found-msg').slideDown("slow");
   $('#movie-not-found-msg').slideUp(3000);
+  // --- UI/UX ---
+  // clear the text field after someone searches
+  document.getElementById("title-input").value = "";
 }
-
-// --- firebase ---
-// Initialize Firebase
-var config = {
-  apiKey: "AIzaSyBWpkmTPb8Jz22vRZY3PEH4HlmPBlN_-LY",
-  authDomain: "great-movies-and-chill.firebaseapp.com",
-  databaseURL: "https://great-movies-and-chill.firebaseio.com",
-  projectId: "great-movies-and-chill",
-  storageBucket: "great-movies-and-chill.appspot.com",
-  messagingSenderId: "511630558004"
-};
-
-firebase.initializeApp(config);
-
-var database = firebase.database();
-
-// when someone does a search -- 
-document.getElementById("movie-search-btn").addEventListener("click", pushFirebaseFunction);
-
-// create a function fo pushing the search to the firebase
-function pushFirebaseFunction () {
-  event.preventDefault();
-
-  // Variable to grab data from inside button
-  var titleSearch = document.getElementById("title-input").value.trim();
-
-  // data validation
-  if (titleSearch !== "") {
-
-    // create local "temporary" object for holding movie searches
-    var newMovie = {
-      titleSearch: titleSearch
-    };
-
-    // upload new movie data to the database
-    database.ref().push(newMovie);
-
-    // log to console
-    console.log(newMovie.titleSearch);
-
-    // --- UI/UX ---
-    // clear the text field after someone searches
-    document.getElementById("title-input").value = "";
-  }
-}
-
-// create Firebase event for adding movie to the database
-database.ref().on("child_added", function (childSnapshot) {
-  console.log(childSnapshot.val());
-
-  // store everything into a variable
-  var titleSearch = childSnapshot.val().titleSearch.toUpperCase();
-
-  // displayMovieInfo -- this part is important! how can i get this to compare with what already exists in the html (that it just created)? the firebase would be loaded but the html wouldn't 
-  console.log(titleSearch);
-
-  // create temp object of our values
-  let tempMovieData = {
-    titleSearch: titleSearch
-  };
-
-  console.log(tempMovieData);
-  // loop through the childSnapshot object and add buttons
-  for (let prop of Object.values(tempMovieData)) {
-    let newBtn = document.createElement("BUTTON")
-    newBtn.innerHTML = prop;
-    newBtn.onclick = displayMovieInfo;
-    newBtn.classList.add("movie-btn");
-    newBtn.setAttribute("id", prop);
-    document.getElementById("trending").appendChild(newBtn);
-  }
-})
-
 
 //create a function to help remove duplcations pulled from: https://www.tutorialrepublic.com/faq/how-to-remove-duplicate-values-from-a-javascript-array.php
 function getUnique(array) {
