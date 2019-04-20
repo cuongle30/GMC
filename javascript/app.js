@@ -16,12 +16,14 @@ document.getElementById("trending").addEventListener("click", function (event) {
   getData(recommended);
 });
 
-//  --- Return Searches ---
+
+//  --- Return Searches and push to Firebase---
 //Click event and query YouTube for Search button
 document.getElementById("movie-search-btn").addEventListener("click", function (event) {
   event.preventDefault();
   // Variable to grab data from user search
-  var titleSearch = document.getElementById("title-input").value.trim();
+  titleSearch = document.getElementById("title-input").value.trim();
+
   // form validation
   if (titleSearch == "") {
     $('#title-validation').slideDown("slow");
@@ -31,8 +33,26 @@ document.getElementById("movie-search-btn").addEventListener("click", function (
     // display the results when someone does a search
     $("#results").show();
     shiftFocalPoint()
+
+    // // --- push to firebase ---
+    // // create local "temporary" object for holding movie searches
+    // var newMovie = {
+    //   titleSearch: titleSearch
+    // };
+
+    // // upload new movie data to the database
+    // database.ref().push(newMovie);
+
+    // // log to console
+    // console.log(newMovie.titleSearch);
+
+    // // --- UI/UX ---
+    // // clear the text field after someone searches
+    // document.getElementById("title-input").value = "";
   }
 });
+
+
 
 // OMDB search for trending movies
 // displayMovieInfo function that is called when the button is clicked
@@ -259,6 +279,7 @@ function getData(recommended) {
           renderMovieElements(response);
           youtubeQueryURL = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${recommended + " official trailer"}+${year}&key=AIzaSyDmKkf_-rWtH9yJ4insi91j9DWhxwj1e-o`
           youtubeFetch();
+          pushToFirebase();
         }
       });
   } else { // if fetch is not supported use XHR
@@ -272,6 +293,7 @@ function getData(recommended) {
           renderMovieElements(response);
         } else {
           console.error(xhr.responseText);
+          movieNotFound();
         }
       }
     };
@@ -302,6 +324,25 @@ function getData(recommended) {
         ytplayer.loadVideoById({ videoId: youtubeVideos })
       });
   }
+
+  // create a function for pushing to firebase
+  // --- push to firebase ---
+  function pushToFirebase() {
+    // create local "temporary" object for holding movie searches
+    var newMovie = {
+      titleSearch: titleSearch
+    };
+
+    // upload new movie data to the database
+    database.ref().push(newMovie);
+
+    // log to console
+    console.log(newMovie.titleSearch);
+
+    // --- UI/UX ---
+    // clear the text field after someone searches
+    document.getElementById("title-input").value = "";
+  }
 }
 
 // create a function for when the search doesn't come back with an omdb response
@@ -326,35 +367,6 @@ firebase.initializeApp(config);
 
 var database = firebase.database();
 
-// when someone does a search -- 
-document.getElementById("movie-search-btn").addEventListener("click", pushFirebaseFunction);
-
-// create a function fo pushing the search to the firebase
-function pushFirebaseFunction () {
-  event.preventDefault();
-
-  // Variable to grab data from inside button
-  var titleSearch = document.getElementById("title-input").value.trim();
-
-  // data validation
-  if (titleSearch !== "") {
-
-    // create local "temporary" object for holding movie searches
-    var newMovie = {
-      titleSearch: titleSearch
-    };
-
-    // upload new movie data to the database
-    database.ref().push(newMovie);
-
-    // log to console
-    console.log(newMovie.titleSearch);
-
-    // --- UI/UX ---
-    // clear the text field after someone searches
-    document.getElementById("title-input").value = "";
-  }
-}
 
 // create Firebase event for adding movie to the database
 database.ref().on("child_added", function (childSnapshot) {
@@ -382,7 +394,6 @@ database.ref().on("child_added", function (childSnapshot) {
     document.getElementById("trending").appendChild(newBtn);
   }
 })
-
 
 //create a function to help remove duplcations pulled from: https://www.tutorialrepublic.com/faq/how-to-remove-duplicate-values-from-a-javascript-array.php
 function getUnique(array) {
