@@ -41,10 +41,6 @@ h2 {
     background: rgba(134, 134, 129, 0.5);
 }
 
-#movie-search-btn {
-    margin-top: -35px;
-}
-
 .photo-credit {
     position: absolute;
     bottom: -10px;
@@ -184,6 +180,15 @@ canvas{
     }
 }
 
+@media (min-width: 768px){
+    .orig-focus {
+        margin-top: -35px;
+    }    
+    .shift-focused {
+        top: 114px;
+       
+    }
+}
 @media (max-width: 767px) {
     .form-group {
         margin-bottom: 0px;
@@ -191,37 +196,49 @@ canvas{
     #movie-search {
         position: static;
     }
-    #movie-search-btn {
+    .shift-focused {
+        margin-top: 0px;
+        top: 107px;
+        left: 279px;
+    }
+    .orig-focus {
         margin-top: 210px;
     }
     .photo-credit {
         bottom: 145px;
     }
+
 }
 
 @media (max-width: 575px) {
-    #movie-search-btn 
+    .orig-focus 
     {
         margin-top: 224px;
+    }
+    .shift-focused {
+        margin: 0px;
+        left: 167px;
     }
 }
 
 @media (max-width: 545px) {
-    #movie-search-btn 
-    {
+    .orig-focus {
         margin-top: 203px;
+    }
+    .shift-focus {
+        left: 140px;
     }
 }
 
 @media (max-width: 504px) {
-    #movie-search-btn 
+    .orig-focus  
     {
         margin-top: 184px;
     }
 }
 
 @media (max-width: 460px) {
-    #movie-search-btn 
+    .orig-focus 
     {
         margin-top: 160px;
     }

@@ -204,12 +204,11 @@ function shiftFocalPoint() {
   // change the toggle to show
   var trendingToggleElement = $("#trending-toggle");
   trendingToggleElement.html(`See trending<span class="down-indicator"></span>`);
-
   document.getElementById("trending").style.marginLeft = "0px";
   // hide the trending buttons until someone clicks
   $("#trending").hide();
-
-  // !!!!!!!!!!!!!!!!try to do a media query for the search button https://www.w3schools.com/jsref/met_win_matchmedia.asp
+  // change the margin at media query for the search button
+  $("#movie-search-btn").removeClass("orig-focus").addClass("shift-focused");
 
 }
 
