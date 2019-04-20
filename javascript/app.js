@@ -100,13 +100,15 @@ function renderMovieElements(response) {
   // displaying the IMDB rating
   movieDiv.appendChild(pIMDBrating);
 
-  // storing the Rotten Tomatoes rating
-  var rottenTomRating = response.Ratings[1].Value; 
+  // storing the second rating source:
+  var secondRatingSource = response.Ratings[1].Source;
+  // storing the second source rating:
+  var secondSourceRating = response.Ratings[1].Value; 
   // creating an element to hold the Rotten Tomatoes rating
-  var pRottenTomRating = document.createElement("p");
-  pRottenTomRating.innerHTML = `<b>Rotten Tomatoes Score: ${rottenTomRating}`;
+  var pSecondSourceRating = document.createElement("p");
+  pSecondSourceRating.innerHTML = `<b>${secondRatingSource}: </b> ${secondSourceRating}`;
   // displaying the Rotten Tomatoes rating
-  movieDiv.appendChild(pRottenTomRating);
+  movieDiv.appendChild(pSecondSourceRating);
 
 
   // storing the genre data
