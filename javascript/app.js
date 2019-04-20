@@ -90,6 +90,25 @@ function renderMovieElements(response) {
   // Appending the image
   movieDiv.appendChild(posterImage);
 
+  // storing the IMDB rating
+  var IMDBrating = response.imdbRating;
+
+  // creating an element to hold the IMDB rating
+  var pIMDBrating = document.createElement("p");
+  pIMDBrating.innerHTML = `<b>IMDb Score: </b>${IMDBrating}`;
+
+  // displaying the IMDB rating
+  movieDiv.appendChild(pIMDBrating);
+
+  // storing the Rotten Tomatoes rating
+  var rottenTomRating = response.Ratings[1].Value; 
+  // creating an element to hold the Rotten Tomatoes rating
+  var pRottenTomRating = document.createElement("p");
+  pRottenTomRating.innerHTML = `<b>Rotten Tomatoes Score: ${rottenTomRating}`;
+  // displaying the Rotten Tomatoes rating
+  movieDiv.appendChild(pRottenTomRating);
+
+
   // storing the genre data
   var genre = response.Genre;
 
